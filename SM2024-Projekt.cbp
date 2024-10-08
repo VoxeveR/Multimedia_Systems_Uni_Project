@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="SM2024-Projekt" />
+		<Option execution_dir="./" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/SM2024-Projekt" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/SM2024-Projekt" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="./SDL2/include" />
+		</Compiler>
+		<Linker>
+			<Add option="-static-libstdc++" />
+			<Add option="-static-libgcc" />
+			<Add option="-static" />
+			<Add library="mingw32" />
+			<Add library="SDL2main" />
+			<Add library="SDL2.dll" />
+			<Add library="user32" />
+			<Add library="gdi32" />
+			<Add library="winmm" />
+			<Add library="dxguid" />
+			<Add directory="./SDL2/lib" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="XCOPY .\SDL2\bin\*.dll $(TARGET_OUTPUT_DIR) /D /Y" />
+		</ExtraCommands>
+		<Unit filename="SM2024-Dithering.cpp" />
+		<Unit filename="SM2024-Dithering.h" />
+		<Unit filename="SM2024-Funkcje.cpp" />
+		<Unit filename="SM2024-Funkcje.h" />
+		<Unit filename="SM2024-MedianCut.cpp" />
+		<Unit filename="SM2024-MedianCut.h" />
+		<Unit filename="SM2024-Paleta.cpp" />
+		<Unit filename="SM2024-Paleta.h" />
+		<Unit filename="SM2024-Pliki.cpp" />
+		<Unit filename="SM2024-Pliki.h" />
+		<Unit filename="SM2024-Projekt.cpp" />
+		<Unit filename="SM2024-Zmienne.cpp" />
+		<Unit filename="SM2024-Zmienne.h" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
