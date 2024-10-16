@@ -5,7 +5,7 @@
 #include "SM2024-Pliki.h"
 #include "SM2024-Dithering.h"
 #include "SM2024-Modele.h"
-
+//ok
 SDL_Color YCbCrtoRGB(Uint8 y, Uint8 cb, Uint8 cr){
 
     SDL_Color RGBret;
