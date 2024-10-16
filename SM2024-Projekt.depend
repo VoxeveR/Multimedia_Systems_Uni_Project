@@ -3856,7 +3856,7 @@
 	<SDL2/SDL.h>
 	<windows.h>
 
-1728987151 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-funkcje.cpp
+1729119715 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-funkcje.cpp
 	"SM2024-Funkcje.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Paleta.h"
@@ -3881,7 +3881,7 @@
 	<iostream>
 	<cmath>
 
-1728380807 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-mediancut.cpp
+1729116254 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-mediancut.cpp
 	"SM2024-MedianCut.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Funkcje.h"
@@ -3924,7 +3924,7 @@
 
 1728987953 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-modele.h
 
-1728986430 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-modele.cpp
+1729119931 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-modele.cpp
 	"SM2024-Funkcje.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Paleta.h"

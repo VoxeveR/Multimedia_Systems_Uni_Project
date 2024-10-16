@@ -67,14 +67,14 @@ YUV RGBtoYUV(int xx, int yy){
     return YUVret;
 }
 
-SDL_Color YIQtoRGB(float y, float i, float q){
+SDL_Color YIQtoRGB(Uint8 y, Uint8 i, Uint8 q){
 
     SDL_Color RGBret;
     float r, g, b;
 
-    r = y + (i * 0.956) + (q * 0.619);
-    g = y + (i * (-0.272)) + (q * (-0.647));
-    b = y + (i * (-1.106)) + (q * 1.703);
+    r = y + ((i-128) * 1.1395) + ((q-128) * 0.647);
+    g = y + ((i-128) * (-0.3242)) + ((q-128) * (-0.6762));
+    b = y + ((i-128) * (-1.3182)) + ((q-128) * 1.78);
 
     RGBret.r = (r<0 ? 0 : (r>255 ? 255 : r));
     RGBret.g = (g<0 ? 0 : (g>255 ? 255 : g));
@@ -90,8 +90,8 @@ YIQ RGBtoYIQ(int xx, int yy){
     float y, i, q;
 
     y = (0.299 * color.r) + (0.587 * color.g) + (0.114 * color.b);
-    i = (0.5959 * color.r) + (-0.2746 * color.g) + (-0.3213 * color.b);
-    q = (0.2115 * color.r) + (-0.5227 * color.g) + (0.3112 * color.b);
+    i = 128 + (0.5 * color.r) + (-0.23032 * color.g) + (-0.2696 * color.b);
+    q = 128 + (0.2023 * color.r) + (-0.5 * color.g) + (0.2977 * color.b);
 
     YIQret.Y = (y<0 ? 0 : (y>255 ? 255 : y));
     YIQret.I = (i<0 ? 0 : (i>255 ? 255 : i));

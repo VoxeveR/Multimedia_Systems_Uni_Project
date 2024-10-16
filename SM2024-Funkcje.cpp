@@ -211,8 +211,11 @@ void Funkcja1() {
             SDL_Color color = YCbCrtoRGB(ycbcr.Y, ycbcr.Cb, ycbcr.Cr);
             setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
             */
-            YUV yuv = RGBtoYUV(x,y);
+          /*  YUV yuv = RGBtoYUV(x,y);
             SDL_Color color = YUVtoRGB(yuv.Y, yuv.U, yuv.V);
+            setPixel(x+szerokosc/2, y, color.r, color.g, color.b);*/
+            YIQ yiq = RGBtoYIQ(x,y);
+            SDL_Color color = YIQtoRGB(yiq.Y, yiq.I, yiq.Q);
             setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
         }
     }
