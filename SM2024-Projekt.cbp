@@ -55,6 +55,8 @@
 		<Unit filename="SM2024-Funkcje.h" />
 		<Unit filename="SM2024-MedianCut.cpp" />
 		<Unit filename="SM2024-MedianCut.h" />
+		<Unit filename="SM2024-Modele.cpp" />
+		<Unit filename="SM2024-Modele.h" />
 		<Unit filename="SM2024-Paleta.cpp" />
 		<Unit filename="SM2024-Paleta.h" />
 		<Unit filename="SM2024-Pliki.cpp" />

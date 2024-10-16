@@ -5,7 +5,7 @@
 #include "SM2024-MedianCut.h"
 #include "SM2024-Pliki.h"
 #include "SM2024-Dithering.h"
-
+#include "SM2024-Modele.h"
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++                Funkcje napisane               ++
@@ -203,7 +203,24 @@ int znajdzSasiadaBW(Uint8 wartosc){
 
 //paleta narzucona
 void Funkcja1() {
-    identyfikator[0] = 'P';
+    //RightToLeft();
+
+    for(int x = 0; x < szerokosc/2; x++){
+        for(int y = 0; y < wysokosc; y++){
+            /*YCbCr ycbcr = RGBtoYCbCr(x,y);
+            SDL_Color color = YCbCrtoRGB(ycbcr.Y, ycbcr.Cb, ycbcr.Cr);
+            setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
+            */
+            YUV yuv = RGBtoYUV(x,y);
+            SDL_Color color = YUVtoRGB(yuv.Y, yuv.U, yuv.V);
+            setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
+        }
+    }
+
+    SDL_UpdateWindowSurface(window);
+
+
+  /*  identyfikator[0] = 'P';
     identyfikator[1] = 'J';
     tryb = 1;
 
@@ -214,12 +231,14 @@ void Funkcja1() {
     if(dithering == 2) ditheringBayer();
 
     SDL_UpdateWindowSurface(window);
-    zczytajDane(szerokosc/2, 0);
-}
+    zczytajDane(szerokosc/2, 0);*/
+    }
 
 //szarosc narzucona
 void Funkcja2() {
-    identyfikator[0] = 'P';
+
+    RightToLeft();
+   /* identyfikator[0] = 'P';
     identyfikator[1] = 'J';
     tryb = 2;
 
@@ -227,10 +246,10 @@ void Funkcja2() {
 
     if(dithering == 0) szaryNarzucony();
     if(dithering == 1) ditheringFloydBW();
-    if(dithering == 2) ditheringBayerBW();
+    if(dithering == 2) ditheringBayerBW();*/
 
     SDL_UpdateWindowSurface(window);
-    zczytajDane(szerokosc/2, 0);
+   // zczytajDane(szerokosc/2, 0);
 }
 
 //szarosc dedykowana
