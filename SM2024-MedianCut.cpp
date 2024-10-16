@@ -3,14 +3,14 @@
 #include "SM2024-Zmienne.h"
 #include "SM2024-Funkcje.h"
 #include "SM2024-Dithering.h"
-
+//ok
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++                 MEDIAN CUT                    ++
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 
 using namespace std;
 
-void sortujKubelekKolor(int start, int koniec, int sortowanie) {
+void sortujKubelekKolor(int start, int koniec, int sortowanie) { 
     for(int i = start; i <= koniec; i++) {
         int maxI = i;
         for(int ii = i; ii <= koniec; ii++) {
