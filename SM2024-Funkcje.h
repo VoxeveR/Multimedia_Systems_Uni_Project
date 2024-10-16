@@ -7,17 +7,7 @@
 #include <SDL2/SDL.h>
 #include <windows.h>
 
-Uint8 z24RGBna5RGB(SDL_Color kolor);
-Uint8 z24RGBna8BW(SDL_Color kolor);
-SDL_Color z5RGBna24RGB(Uint8 kolor5b);
-Uint8 z24RGBna5BW(SDL_Color kolor);
-SDL_Color z5BWna24RGB(Uint8 szary5b);
-void szaryNarzucony();
-void szaryDedykowany();
 void RightToLeft();
-int znajdzSasiada(SDL_Color kolor);
-int znajdzSasiadaBW(Uint8 wartosc);
-
 
 void Funkcja1();
 void Funkcja2();

@@ -3,6 +3,8 @@
 #include "SM2024-Zmienne.h"
 #include "SM2024-Funkcje.h"
 #include "SM2024-Dithering.h"
+#include "SM2024-Konwersje.h"
+#include "SM2024-MedianCut.h"
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++                   PALETA                      ++
@@ -92,6 +94,81 @@ void paletaNarzucona(){
             kolor5b = z24RGBna5RGB(kolor);
             kolor = z5RGBna24RGB(kolor5b);
             setPixel(x + szerokosc/2, y, kolor.r, kolor.g, kolor.b);
+        }
+    }
+
+    SDL_UpdateWindowSurface(window);
+}
+
+void szaryNarzucony(){
+
+    Uint8 kolor5b;
+    SDL_Color kolor, tymczasowyKolor, nowyKolor;
+
+    Uint8 szary, nowySzary;
+    int tymczasowySzary;
+
+    int przesuniecie = 1;
+    float bledy[(szerokosc/2)+2][(wysokosc)+2];
+    memset(bledy, 0, sizeof(bledy));
+    int blad = 0;
+
+    for(int y=0; y<wysokosc; y++){
+        for(int x=0; x<szerokosc/2;x++){
+            kolor = getPixel(x,y);
+
+            szary = 0.299*kolor.r + 0.587*kolor.g + 0.114*kolor.b;
+            tymczasowySzary = szary + bledy[x+przesuniecie][y];
+
+            if(tymczasowySzary > 255) tymczasowySzary = 255;
+            if(tymczasowySzary < 0) tymczasowySzary = 0;
+
+            tymczasowyKolor.r = tymczasowySzary;
+            tymczasowyKolor.g = tymczasowySzary;
+            tymczasowyKolor.b = tymczasowySzary;
+
+            kolor5b = z24RGBna5BW(tymczasowyKolor);
+            nowyKolor = z5BWna24RGB(kolor5b);
+
+            nowySzary = nowyKolor.r;
+
+            blad = tymczasowySzary - nowySzary;
+
+            setPixel(x + szerokosc/2, y, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+
+            bledy[x+1+przesuniecie][y] += (blad*7.0/16.0);
+            bledy[x-1+przesuniecie][y+1] += (blad*3.0/16.0);
+            bledy[x+przesuniecie][y+1] += (blad*5.0/16.0);
+            bledy[x+1+przesuniecie][y+1] += (blad*1.0/16.0);
+        }
+    }
+
+    SDL_UpdateWindowSurface(window);
+}
+
+void szaryDedykowany(){
+    Uint8 szary;
+    SDL_Color kolor;
+    int index, numer = 0;
+    ileKubelkow = 0;
+
+    for(int y=0; y<wysokosc; y++){
+        for(int x=0; x<szerokosc/2;x++){
+            kolor = getPixel(x,y);
+            szary = z24RGBna8BW(kolor);
+            obrazek[numer] = {szary, szary, szary};
+            numer++;
+        }
+    }
+
+    medianCutBW(0, numer-1, 5);
+
+    for(int y=0; y<wysokosc; y++){
+        for(int x=0; x<szerokosc/2;x++){
+            kolor = getPixel(x,y);
+            szary = z24RGBna8BW(kolor);
+            index = znajdzSasiadaBW(szary);
+            setPixel(x + szerokosc/2, y, paleta5[index].r, paleta5[index].g, paleta5[index].b);
         }
     }
 

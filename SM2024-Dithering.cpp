@@ -2,7 +2,8 @@
 #include "SM2024-Paleta.h"
 #include "SM2024-Zmienne.h"
 #include "SM2024-Funkcje.h"
-
+#include "SM2024-Konwersje.h"
+#include "SM2024-MedianCut.h"
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++                  BAYER                        ++
 // +++++++++++++++++++++++++++++++++++++++++++++++++++

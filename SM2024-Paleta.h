@@ -14,6 +14,8 @@ void czyscPalete();
 void narysujPalete(int px, int py, SDL_Color paleta5[]);
 void paletaWykryta();
 void paletaNarzucona();
+void szaryNarzucony();
+void szaryDedykowany();
 
 
 

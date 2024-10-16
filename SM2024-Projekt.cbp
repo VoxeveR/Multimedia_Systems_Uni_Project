@@ -53,6 +53,8 @@
 		<Unit filename="SM2024-Dithering.h" />
 		<Unit filename="SM2024-Funkcje.cpp" />
 		<Unit filename="SM2024-Funkcje.h" />
+		<Unit filename="SM2024-Konwersje.cpp" />
+		<Unit filename="SM2024-Konwersje.h" />
 		<Unit filename="SM2024-MedianCut.cpp" />
 		<Unit filename="SM2024-MedianCut.h" />
 		<Unit filename="SM2024-Modele.cpp" />

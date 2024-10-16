@@ -11,6 +11,8 @@ int znajdzSasiadaBW(Uint8 wartosc);
 void sortujKubelekKolor(int start, int koniec, int sortowanie);
 void medianCutRun();
 
+int znajdzSasiada(SDL_Color kolor);
+int znajdzSasiadaBW(Uint8 wartosc);
 //int partition(int start, int koniec);
 //void sortujKubelekBW(int start, int koniec);
 //int najwiekszaRoznica(int start, int koniec);

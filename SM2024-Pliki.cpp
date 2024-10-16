@@ -5,6 +5,7 @@
 #include "SM2024-MedianCut.h"
 #include "SM2024-Pliki.h"
 #include "SM2024-Dithering.h"
+#include "SM2024-Konwersje.h"
 
 using namespace std;
 // +++++++++++++++++++++++++++++++++++++++++++++++++++

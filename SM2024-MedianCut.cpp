@@ -10,7 +10,39 @@
 
 using namespace std;
 
-void sortujKubelekKolor(int start, int koniec, int sortowanie) { 
+int znajdzSasiada(SDL_Color kolor){
+    int minimum = 999;
+    int indexMinimum = 0;
+    int odleglosc = 0;
+    SDL_Color kolorPaleta;
+    for (int i= 0; i < COLORS_N; i++){
+        kolorPaleta = paleta5[i];
+        odleglosc = abs(kolor.r - kolorPaleta.r) + abs(kolor.g - kolorPaleta.g) + abs(kolor.b - kolorPaleta.b);
+        if(odleglosc < minimum) {
+            indexMinimum = i;
+            minimum = odleglosc;
+        }
+    }
+    return indexMinimum;
+}
+
+int znajdzSasiadaBW(Uint8 wartosc){
+    int minimum = 999;
+    int indexMinimum = 0;
+
+    int odleglosc = 0;
+
+    for (int i= 0; i < COLORS_N; i++){
+        odleglosc = abs(wartosc - paleta5[i].r);
+        if(odleglosc < minimum){
+            minimum = odleglosc;
+            indexMinimum = i;
+        }
+    }
+    return indexMinimum;
+}
+
+void sortujKubelekKolor(int start, int koniec, int sortowanie) {
     for(int i = start; i <= koniec; i++) {
         int maxI = i;
         for(int ii = i; ii <= koniec; ii++) {

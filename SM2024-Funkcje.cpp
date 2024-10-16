@@ -6,151 +6,11 @@
 #include "SM2024-Pliki.h"
 #include "SM2024-Dithering.h"
 #include "SM2024-Modele.h"
+#include "SM2024-Konwersje.h"
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++                Funkcje napisane               ++
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
-
-Uint8 z24RGBna5RGB(SDL_Color kolor){
-
-    int R, G, B;
-    int nowyR, nowyG, nowyB;
-    Uint8 kolor5b;
-
-    R = kolor.r;
-    G = kolor.g;
-    B = kolor.b;
-
-    nowyR = round(R*3.0/255.0);
-    nowyG = round(G*3.0/255.0);
-    nowyB = round(B*1.0/255.0);
-
-    kolor5b = (nowyR<<3) | (nowyG<<1) | (nowyB);
-
-    return kolor5b;
-}
-
-Uint8 z24RGBna8BW(SDL_Color kolor){
-    return 0.299*kolor.r + 0.587*kolor.g + 0.114*kolor.b;
-}
-
-SDL_Color z5RGBna24RGB(Uint8 kolor5b){
-
-    int nowyR, nowyG, nowyB;
-    SDL_Color kolor;
-
-    nowyR = kolor5b&0b00011000;
-    nowyG = kolor5b&0b00000110;
-    nowyB = kolor5b&0b00000001;
-
-    nowyR = nowyR>>3;
-    nowyG = nowyG>>1;
-
-    kolor.r = nowyR*255.0/3.0;
-    kolor.g = nowyG*255.0/3.0;
-    kolor.b = nowyB*255.0/1.0;
-
-    return kolor;
-}
-
-Uint8 z24RGBna5BW(SDL_Color kolor){
-    Uint8 szary8b;
-    Uint8 szary5b;
-
-    szary8b = 0.299*kolor.r + 0.587*kolor.g + 0.114*kolor.b;
-    szary5b = round(szary8b*31.0/255.0);
-
-    return szary5b;
-
-}
-
-SDL_Color z5BWna24RGB(Uint8 szary5b){
-    Uint8 szary8b;
-    SDL_Color kolor;
-
-    szary8b = szary5b*255.0/31.0;
-
-    kolor.r = szary8b;
-    kolor.g = szary8b;
-    kolor.b = szary8b;
-
-    return kolor;
-}
-
-void szaryNarzucony(){
-
-    Uint8 kolor5b;
-    SDL_Color kolor, tymczasowyKolor, nowyKolor;
-
-    Uint8 szary, nowySzary;
-    int tymczasowySzary;
-
-    int przesuniecie = 1;
-    float bledy[(szerokosc/2)+2][(wysokosc)+2];
-    memset(bledy, 0, sizeof(bledy));
-    int blad = 0;
-
-    for(int y=0; y<wysokosc; y++){
-        for(int x=0; x<szerokosc/2;x++){
-            kolor = getPixel(x,y);
-
-            szary = 0.299*kolor.r + 0.587*kolor.g + 0.114*kolor.b;
-            tymczasowySzary = szary + bledy[x+przesuniecie][y];
-
-            if(tymczasowySzary > 255) tymczasowySzary = 255;
-            if(tymczasowySzary < 0) tymczasowySzary = 0;
-
-            tymczasowyKolor.r = tymczasowySzary;
-            tymczasowyKolor.g = tymczasowySzary;
-            tymczasowyKolor.b = tymczasowySzary;
-
-            kolor5b = z24RGBna5BW(tymczasowyKolor);
-            nowyKolor = z5BWna24RGB(kolor5b);
-
-            nowySzary = nowyKolor.r;
-
-            blad = tymczasowySzary - nowySzary;
-
-            setPixel(x + szerokosc/2, y, nowyKolor.r, nowyKolor.g, nowyKolor.b);
-
-            bledy[x+1+przesuniecie][y] += (blad*7.0/16.0);
-            bledy[x-1+przesuniecie][y+1] += (blad*3.0/16.0);
-            bledy[x+przesuniecie][y+1] += (blad*5.0/16.0);
-            bledy[x+1+przesuniecie][y+1] += (blad*1.0/16.0);
-        }
-    }
-
-    SDL_UpdateWindowSurface(window);
-}
-
-void szaryDedykowany(){
-    Uint8 szary;
-    SDL_Color kolor;
-    int index, numer = 0;
-    ileKubelkow = 0;
-
-    for(int y=0; y<wysokosc; y++){
-        for(int x=0; x<szerokosc/2;x++){
-            kolor = getPixel(x,y);
-            szary = z24RGBna8BW(kolor);
-            obrazek[numer] = {szary, szary, szary};
-            numer++;
-        }
-    }
-
-    medianCutBW(0, numer-1, 5);
-
-    for(int y=0; y<wysokosc; y++){
-        for(int x=0; x<szerokosc/2;x++){
-            kolor = getPixel(x,y);
-            szary = z24RGBna8BW(kolor);
-            index = znajdzSasiadaBW(szary);
-            setPixel(x + szerokosc/2, y, paleta5[index].r, paleta5[index].g, paleta5[index].b);
-        }
-    }
-
-    SDL_UpdateWindowSurface(window);
-}
 
 void RightToLeft(){
     SDL_Color kolor;
@@ -163,38 +23,6 @@ void RightToLeft(){
         }
     }
     SDL_UpdateWindowSurface(window);
-}
-
-int znajdzSasiada(SDL_Color kolor){
-    int minimum = 999;
-    int indexMinimum = 0;
-    int odleglosc = 0;
-    SDL_Color kolorPaleta;
-    for (int i= 0; i < COLORS_N; i++){
-        kolorPaleta = paleta5[i];
-        odleglosc = abs(kolor.r - kolorPaleta.r) + abs(kolor.g - kolorPaleta.g) + abs(kolor.b - kolorPaleta.b);
-        if(odleglosc < minimum) {
-            indexMinimum = i;
-            minimum = odleglosc;
-        }
-    }
-    return indexMinimum;
-}
-
-int znajdzSasiadaBW(Uint8 wartosc){
-    int minimum = 999;
-    int indexMinimum = 0;
-
-    int odleglosc = 0;
-
-    for (int i= 0; i < COLORS_N; i++){
-        odleglosc = abs(wartosc - paleta5[i].r);
-        if(odleglosc < minimum){
-            minimum = odleglosc;
-            indexMinimum = i;
-        }
-    }
-    return indexMinimum;
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -222,7 +50,7 @@ void Funkcja1() {
 
     SDL_UpdateWindowSurface(window);
 
-
+//initial project
   /*  identyfikator[0] = 'P';
     identyfikator[1] = 'J';
     tryb = 1;
