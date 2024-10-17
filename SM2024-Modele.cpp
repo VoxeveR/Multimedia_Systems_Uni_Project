@@ -5,7 +5,6 @@
 #include "SM2024-Pliki.h"
 #include "SM2024-Dithering.h"
 #include "SM2024-Modele.h"
-
 #include <algorithm>
 
 SDL_Color YCbCrtoRGB(Uint8 y, Uint8 cb, Uint8 cr){
@@ -103,6 +102,131 @@ YIQ RGBtoYIQ(int xx, int yy){
 }
 
 SDL_Color HSLtoRGB(Uint8 h, Uint8 s, Uint8 l){
+
+    SDL_Color RGBret;
+    float zmienna1, zmienna2, barwa;
+    float zmiennaR, zmiennaG, zmiennaB;
+
+    float H = (h / 255.0) * 360.0;
+    float S = s / 255.0;
+    float L = l / 255.0;
+
+    if(S == 0){
+        RGBret.r = (L) * 255;
+        RGBret.g = (L) * 255;
+        RGBret.b = (L) * 255;
+    } else {
+        if (L < 0.5){
+            zmienna1 = L * (1.0 + S);
+        } else {
+            zmienna1 = L + S - (L * S);
+        }
+
+        zmienna2 = 2 * L - zmienna1;
+        barwa = H / 360;
+
+        if (zmienna1 < 0) zmienna1 += 1;
+        if (zmienna1 > 1) zmienna1 -= 1;
+
+        if (zmienna2 < 0) zmienna2 += 1;
+        if (zmienna2 > 1) zmienna2 -= 1;
+
+        zmiennaR = barwa + 0.333;
+        if (zmiennaR < 0) zmiennaR += 1;
+        if (zmiennaR > 1) zmiennaR -= 1;
+
+        zmiennaG = barwa;
+        if (zmiennaG < 0) zmiennaG += 1;
+        if (zmiennaG > 1) zmiennaG -= 1;
+
+        zmiennaB = barwa - 0.333;
+        if (zmiennaB < 0) zmiennaB += 1;
+        if (zmiennaB > 1) zmiennaB -= 1;
+
+        float czerwony;
+        if((6 * zmiennaR) < 1){
+            czerwony = zmienna2 + (zmienna1 - zmienna2) * 6 * zmiennaR;
+        } else if((2 * zmiennaR) < 1 ){
+            czerwony = zmienna1;
+        } else if((3 * zmiennaR) < 2) {
+            czerwony = zmienna2 + (zmienna1 - zmienna2) * (0.666 - zmiennaR) * 6;
+        } else {
+            czerwony = zmienna2;
+        }
+
+        float zielony;
+        if((6 * zmiennaG) < 1){
+            zielony = zmienna2 + (zmienna1 - zmienna2) * 6 * zmiennaG;
+        } else if((2 * zmiennaG) < 1 ){
+            zielony = zmienna1;
+        } else if((3 * zmiennaG) < 2) {
+            zielony = zmienna2 + (zmienna1 - zmienna2) * (0.666 - zmiennaG) * 6;
+        } else {
+            zielony = zmienna2;
+        }
+
+        float niebieski;
+        if((6 * zmiennaB) < 1){
+            niebieski = zmienna2 + (zmienna1 - zmienna2) * 6 * zmiennaB;
+        } else if((2 * zmiennaB) < 1 ){
+            niebieski = zmienna1;
+        } else if((3 * zmiennaB) < 2) {
+            niebieski = zmienna2 + (zmienna1 - zmienna2) * (0.666 - zmiennaB) * 6;
+        } else {
+            niebieski = zmienna2;
+        }
+
+        RGBret.r = czerwony * 255;
+        RGBret.g = zielony * 255;
+        RGBret.b = niebieski * 255;
+    }
+    return RGBret;
+}
+
+HSL RGBtoHSL(int xx, int yy){
+    SDL_Color colorRGB = getPixel(xx, yy);
+    float r, g, b, mmin, mmax;
+    HSL HSLret;
+    float h, s, l;
+
+    r = colorRGB.r*1.0/255;
+    g = colorRGB.g*1.0/255;
+    b = colorRGB.b*1.0/255;
+
+    mmin = std::min(r,(std::min(g,b)));
+    mmax = std::max(r,(std::max(g,b)));
+
+    l = (mmin+mmax)/2.0;
+
+    if(mmin == mmax){
+        s = 0;
+    } else if(HSLret.L <= 0.5){
+        s = (mmax-mmin) / (mmax+mmin);
+    } else{
+        s = (mmax-mmin) / (2.0 - mmax - mmin);
+    }
+
+    if(r == mmax){
+        h = (g - b) / (mmax-mmin);
+    } else if(g == mmax){
+        h = 2.0 + (b - r) / (mmax-mmin);
+    } else{
+        h = 4.0 + (r - g) / (mmax-mmin); // by³o r - b
+    }
+
+    h *= 60;
+    if(h< 0) h += 360;
+
+    HSLret.H = (h/360)*255;
+    HSLret.S = s * 255;
+    HSLret.L = l * 255;
+
+    return HSLret;
+}
+
+
+/* PURE HSL, BEZ MOICH ZMIAN IDE SPANKO
+SDL_Color HSLtoRGB(Uint8 h, Uint8 s, Uint8 l){
     SDL_Color RGBret;
     float zmienna1, zmienna2, barwa;
     float zmiennaR, zmiennaG, zmiennaB;
@@ -188,8 +312,8 @@ HSL RGBtoHSL(int xx, int yy){
     g = colorRGB.g*1.0/255;
     b = colorRGB.b*1.0/255;
 
-    mmin = std::min(r,(std::min(g,b)));
-    mmax = std::max(r,(std::max(g,b)));
+    mmin = min(r,(min(g,b)));
+    mmax = max(r,(max(g,b)));
 
     HSLret.L = (mmin+mmax)/2.0;
 
@@ -206,7 +330,7 @@ HSL RGBtoHSL(int xx, int yy){
     } else if(g == mmax){
         HSLret.H = 2.0 + (b - r) / (mmax-mmin);
     } else{
-        HSLret.H = 4.0 + (r - g) / (mmax-mmin); // by�o r - b
+        HSLret.H = 4.0 + (r - g) / (mmax-mmin); // było r - b
     }
 
     HSLret.H *= 60;
@@ -214,3 +338,6 @@ HSL RGBtoHSL(int xx, int yy){
 
     return HSLret;
 }
+*/
+
+

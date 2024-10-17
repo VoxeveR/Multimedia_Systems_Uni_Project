@@ -4347,7 +4347,7 @@
 	<SDL2/SDL.h>
 	<windows.h>
 
-1729122482 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-funkcje.cpp
+1729123395 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-funkcje.cpp
 	"SM2024-Funkcje.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Paleta.h"
@@ -4381,7 +4381,7 @@
 	"SM2024-Funkcje.h"
 	"SM2024-Dithering.h"
 
-1729122398 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-modele.cpp
+1729123702 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-modele.cpp
 	"SM2024-Funkcje.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Paleta.h"
@@ -4391,12 +4391,13 @@
 	"SM2024-Modele.h"
 	<algorithm>
 
-1729121039 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-paleta.cpp
+1729122585 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-paleta.cpp
 	"SM2024-Paleta.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Funkcje.h"
 	"SM2024-Dithering.h"
 	"SM2024-Konwersje.h"
+	"SM2024-MedianCut.h"
 
 1729121145 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-pliki.cpp
 	"SM2024-Funkcje.h"

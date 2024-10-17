@@ -14,13 +14,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <SDL2/SDL.h>
-
-//nasze
 #include <conio.h>
-//#include <windows.h>
-//#include <fstream>
 #include <bitset>
-//nasze
 
 using namespace std;
 // +++++++++++++++++++++++++++++++++++++++++++++++++++

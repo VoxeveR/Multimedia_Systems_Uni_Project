@@ -35,15 +35,23 @@ void Funkcja1() {
 
     for(int x = 0; x < szerokosc/2; x++){
         for(int y = 0; y < wysokosc; y++){
-            /*YCbCr ycbcr = RGBtoYCbCr(x,y);
+            /* TEST YCbCr
+            YCbCr ycbcr = RGBtoYCbCr(x,y);
             SDL_Color color = YCbCrtoRGB(ycbcr.Y, ycbcr.Cb, ycbcr.Cr);
             setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
             */
-          /*  YUV yuv = RGBtoYUV(x,y);
+            /* TEST YUV
+            YUV yuv = RGBtoYUV(x,y);
             SDL_Color color = YUVtoRGB(yuv.Y, yuv.U, yuv.V);
-            setPixel(x+szerokosc/2, y, color.r, color.g, color.b);*/
+            setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
+            */
+            /* TEST YIQ
             YIQ yiq = RGBtoYIQ(x,y);
             SDL_Color color = YIQtoRGB(yiq.Y, yiq.I, yiq.Q);
+            setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
+            */
+            HSL hsl = RGBtoHSL(x,y);
+            SDL_Color color = HSLtoRGB(hsl.H, hsl.S, hsl.L);
             setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
         }
     }
