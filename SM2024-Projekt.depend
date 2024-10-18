@@ -4354,7 +4354,7 @@
 	<SDL2/SDL.h>
 	<windows.h>
 
-1729123395 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-funkcje.cpp
+1729259673 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-funkcje.cpp
 	"SM2024-Funkcje.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Paleta.h"
@@ -4380,7 +4380,7 @@
 	<iostream>
 	<cmath>
 
-1729122418 c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-modele.h
+1729260880 c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-modele.h
 
 1729122508 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-mediancut.cpp
 	"SM2024-MedianCut.h"
@@ -4388,7 +4388,7 @@
 	"SM2024-Funkcje.h"
 	"SM2024-Dithering.h"
 
-1729123702 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-modele.cpp
+1729260615 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-modele.cpp
 	"SM2024-Funkcje.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Paleta.h"
@@ -4415,7 +4415,7 @@
 	"SM2024-Dithering.h"
 	"SM2024-Konwersje.h"
 
-1729118232 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-projekt.cpp
+1729123931 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-projekt.cpp
 	"SM2024-Zmienne.h"
 	"SM2024-Funkcje.h"
 	"SM2024-Paleta.h"
