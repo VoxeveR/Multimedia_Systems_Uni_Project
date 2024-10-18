@@ -189,37 +189,44 @@ HSL RGBtoHSL(int xx, int yy){
     HSL HSLret;
     float h, s, l;
 
-    r = colorRGB.r*1.0/255;
-    g = colorRGB.g*1.0/255;
-    b = colorRGB.b*1.0/255;
+    r = colorRGB.r;
+    g = colorRGB.g;
+    b = colorRGB.b;
 
     mmin = std::min(r,(std::min(g,b)));
     mmax = std::max(r,(std::max(g,b)));
 
-    l = (mmin+mmax)/2.0;
+    l = (mmin+mmax)/510;
 
     if(mmin == mmax){
         s = 0;
-    } else if(HSLret.L <= 0.5){
+    } else if(HSLret.L <= 128){
         s = (mmax-mmin) / (mmax+mmin);
     } else{
-        s = (mmax-mmin) / (2.0 - mmax - mmin);
+        s = (mmax-mmin) / (510 - mmax - mmin);
     }
 
     if(r == mmax){
         h = (g - b) / (mmax-mmin);
     } else if(g == mmax){
-        h = 2.0 + (b - r) / (mmax-mmin);
+        h = 510 + (b - r) / (mmax-mmin);
     } else{
-        h = 4.0 + (r - g) / (mmax-mmin); // by³o r - b
+        h = 1020 + (r - g) / (mmax-mmin); // by³o r - b
     }
 
     h *= 60;
     if(h< 0) h += 360;
 
-    HSLret.H = (h/360)*255;
-    HSLret.S = s * 255;
-    HSLret.L = l * 255;
+    //h *= 255;
+    h /= 360;
+    s *= 255;
+    l *= 255;
+
+    std::cout << h << " " << s << " " << l << std::endl;
+
+    HSLret.H = (Uint8)h;
+    HSLret.S = (Uint8)s;
+    HSLret.L = (Uint8)l;
 
     return HSLret;
 }

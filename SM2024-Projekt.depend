@@ -3444,12 +3444,14 @@
 	<conio.h>
 	<bitset>
 
-1728380133 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-dithering.cpp
+1729156006 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-dithering.cpp
 	"SM2024-Paleta.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Funkcje.h"
+	"SM2024-Konwersje.h"
+	"SM2024-MedianCut.h"
 
-1728406636 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-paleta.h
+1729156006 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-paleta.h
 	<stdio.h>
 	<stdlib.h>
 	<SDL2/SDL.h>
@@ -3852,11 +3854,11 @@
 1728382890 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-zmienne.h
 	<SDL2/SDL.h>
 
-1728406499 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-funkcje.h
+1729156006 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-funkcje.h
 	<SDL2/SDL.h>
 	<windows.h>
 
-1729119715 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-funkcje.cpp
+1729156006 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-funkcje.cpp
 	"SM2024-Funkcje.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Paleta.h"
@@ -3864,8 +3866,9 @@
 	"SM2024-Pliki.h"
 	"SM2024-Dithering.h"
 	"SM2024-Modele.h"
+	"SM2024-Konwersje.h"
 
-1728379665 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-mediancut.h
+1729156006 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-mediancut.h
 	<SDL2/SDL.h>
 
 1728406701 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-pliki.h
@@ -3881,27 +3884,30 @@
 	<iostream>
 	<cmath>
 
-1729116254 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-mediancut.cpp
+1729156006 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-mediancut.cpp
 	"SM2024-MedianCut.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Funkcje.h"
 	"SM2024-Dithering.h"
 
-1728383154 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-paleta.cpp
+1729156006 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-paleta.cpp
 	"SM2024-Paleta.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Funkcje.h"
 	"SM2024-Dithering.h"
+	"SM2024-Konwersje.h"
+	"SM2024-MedianCut.h"
 
-1728406749 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-pliki.cpp
+1729156006 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-pliki.cpp
 	"SM2024-Funkcje.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Paleta.h"
 	"SM2024-MedianCut.h"
 	"SM2024-Pliki.h"
 	"SM2024-Dithering.h"
+	"SM2024-Konwersje.h"
 
-1728984470 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-projekt.cpp
+1729156006 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-projekt.cpp
 	"SM2024-Zmienne.h"
 	"SM2024-Funkcje.h"
 	"SM2024-Paleta.h"
@@ -3922,9 +3928,9 @@
 1728406719 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-zmienne.cpp
 	"SM2024-Zmienne.h"
 
-1728987953 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-modele.h
+1729156006 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-modele.h
 
-1729119931 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-modele.cpp
+1729166087 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-modele.cpp
 	"SM2024-Funkcje.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Paleta.h"
@@ -3932,6 +3938,7 @@
 	"SM2024-Pliki.h"
 	"SM2024-Dithering.h"
 	"SM2024-Modele.h"
+	<algorithm>
 
 1729122569 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-dithering.cpp
 	"SM2024-Paleta.h"
@@ -4432,6 +4439,17 @@
 1729120906 c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-konwersje.h
 
 1729120845 source:c:\users\piotr\onedrive\dokumenty\uni\sm2024_projekt\multimedia_systems_uni_project\sm2024-konwersje.cpp
+	"SM2024-Funkcje.h"
+	"SM2024-Zmienne.h"
+	"SM2024-Paleta.h"
+	"SM2024-MedianCut.h"
+	"SM2024-Pliki.h"
+	"SM2024-Dithering.h"
+	"SM2024-Modele.h"
+
+1729156006 c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-konwersje.h
+
+1729156006 source:c:\users\piotr\uni\sm2024projekt\multimedia_systems_uni_project\sm2024-konwersje.cpp
 	"SM2024-Funkcje.h"
 	"SM2024-Zmienne.h"
 	"SM2024-Paleta.h"
