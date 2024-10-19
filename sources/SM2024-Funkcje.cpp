@@ -50,16 +50,16 @@ void Funkcja1() {
            // SDL_Color color = YIQtoRGB(yiq.Y, yiq.I, yiq.Q);
             //setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
 
-            HSL hsl = RGBtoHSL(x,y);
-            SDL_Color color = HSLtoRGB(hsl.H, hsl.S, hsl.L);
-            setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
+            //HSL hsl = RGBtoHSL(x,y);
+            //SDL_Color color = HSLtoRGB(hsl.H, hsl.S, hsl.L);
+            //setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
         }
     }
 
-    SDL_UpdateWindowSurface(window);
+    //SDL_UpdateWindowSurface(window);
 
 //initial project
-  /*  identyfikator[0] = 'P';
+    identyfikator[0] = 'P';
     identyfikator[1] = 'J';
     tryb = 1;
 
@@ -70,7 +70,7 @@ void Funkcja1() {
     if(dithering == 2) ditheringBayer();
 
     SDL_UpdateWindowSurface(window);
-    zczytajDane(szerokosc/2, 0);*/
+    zczytajDane(szerokosc/2, 0);
     }
 
 //szarosc narzucona

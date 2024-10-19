@@ -205,9 +205,20 @@ void ditheringFloyd(){
     int tymczasowyKolorr, tymczasowyKolorg, tymczasowyKolorb;
 
     int przesuniecie = 1;
-    float bledyR[(szerokosc/2)+2][(wysokosc)+2];
-    float bledyG[(szerokosc/2)+2][(wysokosc)+2];
-    float bledyB[(szerokosc/2)+2][(wysokosc)+2];
+    float** bledyR = new float*[(szerokosc / 2) + 2];
+    float** bledyG = new float*[(szerokosc / 2) + 2];
+    float** bledyB = new float*[(szerokosc / 2) + 2];
+    
+    for (int i = 0; i < (szerokosc / 2) + 2; ++i) {
+        bledyR[i] = new float[wysokosc + 2];
+        bledyG[i] = new float[wysokosc + 2];
+        bledyB[i] = new float[wysokosc + 2];
+        // Initialize arrays with zeros
+        memset(bledyR[i], 0, (wysokosc + 2) * sizeof(float));
+        memset(bledyG[i], 0, (wysokosc + 2) * sizeof(float));
+        memset(bledyB[i], 0, (wysokosc + 2) * sizeof(float));
+    }
+
     memset(bledyR, 0, sizeof(bledyR));
     memset(bledyG, 0, sizeof(bledyG));
     memset(bledyB, 0, sizeof(bledyB));
@@ -262,28 +273,43 @@ void ditheringFloyd(){
         }
     }
 
+    for (int i = 0; i < (szerokosc / 2) + 2; ++i) {
+        delete[] bledyR[i];
+        delete[] bledyG[i];
+        delete[] bledyB[i];
+    }
+
+    delete[] bledyR;
+    delete[] bledyG;
+    delete[] bledyB;
+
     SDL_UpdateWindowSurface(window);
 }
 
-void ditheringFloydBW(){
+void ditheringFloydBW() {
     SDL_Color kolor, kolor_new, tymKolor;
 
     Uint8 szary, nowySzary;
     int tymSzary;
 
     int przesuniecie = 1;
-    float bledy[(szerokosc/2)+2][wysokosc+2];
-    memset(bledy, 0, sizeof(bledy));
+    float** bledy = new float*[(szerokosc / 2) + 2];
+
+    for (int i = 0; i < (szerokosc / 2) + 2; ++i) {
+        bledy[i] = new float[wysokosc + 2];
+        memset(bledy[i], 0, (wysokosc + 2) * sizeof(float));
+    }
+
     int blad = 0;
 
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            kolor = getPixel(x,y);
+    for (int y = 0; y < wysokosc; y++) {
+        for (int x = 0; x < szerokosc / 2; x++) {
+            kolor = getPixel(x, y);
             szary = 0.299 * kolor.r + 0.587 * kolor.g + 0.114 * kolor.b;
-            tymSzary = szary + bledy[x+przesuniecie][y];
+            tymSzary = szary + bledy[x + przesuniecie][y];
 
-            if(tymSzary > 255) tymSzary = 255;
-            if(tymSzary < 0) tymSzary = 0;
+            if (tymSzary > 255) tymSzary = 255;
+            if (tymSzary < 0) tymSzary = 0;
 
             tymKolor.r = tymSzary;
             tymKolor.g = tymSzary;
@@ -295,16 +321,23 @@ void ditheringFloydBW(){
             nowySzary = kolor_new.r;
             blad = tymSzary - nowySzary;
 
-            setPixel(x+szerokosc/2, y, kolor_new.r, kolor_new.g, kolor_new.b);
+            setPixel(x + szerokosc / 2, y, kolor_new.r, kolor_new.g, kolor_new.b);
 
-            bledy[x+1+przesuniecie][y] += (blad*7.0/16.0);
-            bledy[x-1+przesuniecie][y+1] += (blad*3.0/16.0);
-            bledy[x+przesuniecie][y+1] += (blad*5.0/16.0);
-            bledy[x+1+przesuniecie][y+1] += (blad*1.0/16.0);
+            bledy[x + 1 + przesuniecie][y] += (blad * 7.0 / 16.0);
+            bledy[x - 1 + przesuniecie][y + 1] += (blad * 3.0 / 16.0);
+            bledy[x + przesuniecie][y + 1] += (blad * 5.0 / 16.0);
+            bledy[x + 1 + przesuniecie][y + 1] += (blad * 1.0 / 16.0);
         }
     }
 
     SDL_UpdateWindowSurface(window);
+
+    // Free dynamically allocated memory
+    for (int i = 0; i < (szerokosc / 2) + 2; ++i) {
+        delete[] bledy[i];
+    }
+
+    delete[] bledy;
 }
 
 void ditheringFloydPaletowy() {
@@ -317,10 +350,19 @@ void ditheringFloydPaletowy() {
 
     int przesuniecie = 1;
 
-    float bledyR[(szerokosc/2)+2][wysokosc+2];
-    float bledyG[(szerokosc/2)+2][wysokosc+2];
-    float bledyB[(szerokosc/2)+2][wysokosc+2];
+    float** bledyR = new float*[(szerokosc / 2) + 2];
+    float** bledyG = new float*[(szerokosc / 2) + 2];
+    float** bledyB = new float*[(szerokosc / 2) + 2];
 
+    for (int i = 0; i < (szerokosc / 2) + 2; ++i) {
+        bledyR[i] = new float[wysokosc + 2];
+        bledyG[i] = new float[wysokosc + 2];
+        bledyB[i] = new float[wysokosc + 2];
+
+        memset(bledyR[i], 0, (wysokosc + 2) * sizeof(float));
+        memset(bledyG[i], 0, (wysokosc + 2) * sizeof(float));
+        memset(bledyB[i], 0, (wysokosc + 2) * sizeof(float));
+    }
     int blad = 0;
 
     for(int y = 0; y < wysokosc; y++)
@@ -377,6 +419,16 @@ void ditheringFloydPaletowy() {
         }
     }
     SDL_UpdateWindowSurface(window);
+
+    for (int i = 0; i < (szerokosc / 2) + 2; ++i) {
+        delete[] bledyR[i];
+        delete[] bledyG[i];
+        delete[] bledyB[i];
+    }
+
+    delete[] bledyR;
+    delete[] bledyG;
+    delete[] bledyB;
 }
 
 void ditheringFloydPaletowyBW() {
@@ -388,7 +440,12 @@ void ditheringFloydPaletowyBW() {
 
     int przesuniecie = 1;
 
-    float bledy[(szerokosc/2)+2][wysokosc+2];
+    float** bledy = new float*[(szerokosc / 2) + 2];
+
+    for (int i = 0; i < (szerokosc / 2) + 2; ++i) {
+            bledy[i] = new float[wysokosc + 2];
+            memset(bledy[i], 0, (wysokosc + 2) * sizeof(float));
+        }
 
     int blad = 0;
 
@@ -423,4 +480,9 @@ void ditheringFloydPaletowyBW() {
     }
 
     SDL_UpdateWindowSurface(window);
+
+    for (int i = 0; i < (szerokosc / 2) + 2; ++i) {
+        delete[] bledy[i];
+    }
+    delete[] bledy;
 }
