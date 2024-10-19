@@ -81,7 +81,7 @@ void ditheringBayer(){
             if(blue > 255) blue = 255;
             if(blue < 0) blue = 0;
 
-            SDL_Color nowyKolor = {red, green, blue};
+            SDL_Color nowyKolor = {(Uint8)red, (Uint8)green, (Uint8)blue};
 
             Uint8 kolor5bit = z24RGBna5RGB(nowyKolor);
             nowyKolor = z5RGBna24RGB(kolor5bit);
@@ -121,7 +121,7 @@ void ditheringBayerPaletowy(){
             if(blue > 255) blue = 255;
             if(blue < 0) blue = 0;
 
-            SDL_Color nowyKolor = {red, green, blue};
+            SDL_Color nowyKolor = {(Uint8)red, (Uint8)green, (Uint8)blue};
 
             Uint8 index = znajdzSasiada(nowyKolor);
             setPixel(x + szerokosc/2,y, paleta5[index].r, paleta5[index].g, paleta5[index].b);
@@ -153,7 +153,7 @@ void ditheringBayerBW(){
             if(nowySzary > 255) nowySzary = 255;
             if(nowySzary < 0) nowySzary = 0;
 
-            SDL_Color nowyKolorBW = {nowySzary, nowySzary, nowySzary};
+            SDL_Color nowyKolorBW = {(Uint8)nowySzary, (Uint8)nowySzary, (Uint8)nowySzary};
 
             Uint8 kolor5bit = z24RGBna5BW(nowyKolorBW);
             SDL_Color nowyKolor = z5BWna24RGB(kolor5bit);

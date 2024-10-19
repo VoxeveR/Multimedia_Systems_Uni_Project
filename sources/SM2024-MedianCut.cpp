@@ -128,7 +128,7 @@ void medianCut(int start, int koniec, int iter) {
 
         int n = koniec + 1 - start;
 
-        SDL_Color nowyKolor = {sumaR/n, sumaG/n, sumaB/n};
+        SDL_Color nowyKolor = {(Uint8)(sumaR/n), (Uint8)(sumaG/n), (Uint8)(sumaB/n)};
 
         paleta5[ileKubelkow] = nowyKolor;
 
