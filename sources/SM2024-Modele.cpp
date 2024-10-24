@@ -166,7 +166,7 @@ SDL_Color HSLtoRGB(Uint8 h, Uint8 s, Uint8 l){
         } else {
             zielony = zmienna2;
         }
-
+    
         float niebieski;
         if((6 * zmiennaB) < 1){
             niebieski = zmienna2 + (zmienna1 - zmienna2) * 6 * zmiennaB;
