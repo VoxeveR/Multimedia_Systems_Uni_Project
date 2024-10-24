@@ -92,6 +92,8 @@ void ditheringBayer(){
     SDL_UpdateWindowSurface(window);
 }
 
+
+
 void ditheringBayerPaletowy(){
     SDL_Color kolor;
     int red, green, blue;

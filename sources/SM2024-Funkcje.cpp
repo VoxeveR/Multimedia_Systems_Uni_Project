@@ -31,34 +31,7 @@ void RightToLeft(){
 
 //paleta narzucona
 void Funkcja1() {
-    //RightToLeft();
-
-    for(int x = 0; x < szerokosc/2; x++){
-        for(int y = 0; y < wysokosc; y++){
-            /* TEST YCbCr
-            YCbCr ycbcr = RGBtoYCbCr(x,y);
-            SDL_Color color = YCbCrtoRGB(ycbcr.Y, ycbcr.Cb, ycbcr.Cr);
-            setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
-            */
-            /* TEST YUV
-            YUV yuv = RGBtoYUV(x,y);
-            SDL_Color color = YUVtoRGB(yuv.Y, yuv.U, yuv.V);
-            setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
-            */
-             //TEST YIQ
-           // YIQ yiq = RGBtoYIQ(x,y);
-           // SDL_Color color = YIQtoRGB(yiq.Y, yiq.I, yiq.Q);
-            //setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
-
-            //HSL hsl = RGBtoHSL(x,y);
-            //SDL_Color color = HSLtoRGB(hsl.H, hsl.S, hsl.L);
-            //setPixel(x+szerokosc/2, y, color.r, color.g, color.b);
-        }
-    }
-
-    //SDL_UpdateWindowSurface(window);
-
-//initial project
+    //initial project
     identyfikator[0] = 'P';
     identyfikator[1] = 'J';
     tryb = 1;
@@ -71,7 +44,7 @@ void Funkcja1() {
 
     SDL_UpdateWindowSurface(window);
     zczytajDane(szerokosc/2, 0);
-    }
+}
 
 //szarosc narzucona
 void Funkcja2() {
