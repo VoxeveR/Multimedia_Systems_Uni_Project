@@ -19,7 +19,7 @@ git clone https://github.com/VoxeveR/Multimedia_Systems_Uni_Project.git
 ```
 2. Build project and run it
 ```
-make && ./main.exe
+make run
 ```
 **_NOTE:_** VS Code is prefered editor for this project.
 
