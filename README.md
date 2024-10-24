@@ -7,9 +7,22 @@
 * [Technologies](#technologies)
 
 ## General info
-Multimedia Systems project, which focuses on creating a 15 / 16 bit graphic format.
+The goal of the project is to extend the raster graphics file specification prepared earlier in Computer Graphics that captures color (using n imposed and n dedicated colors) and grayscale (using n grayscale steps) images to support 15-bit, 16-bit and 24-bit modes using:
+* various color spaces (RGB, YUV, YIQ, YCbCr, HSV),
+* predictive algorithms,
+* lossless compression (ByteRun, RLE, LZW, LZ77),
+* lossy compression ( DCT  transform + component subsampling),
+* the application should convert from a BMP file to a new type of image file and from a new type of file to BMP format with the possibility of the user to indicate the color mode, color space, prediction algorithm and type of compression (lossy or lossless).
 
 **_NOTE:_**  Project is still under development
+
+## TODO
+* ~~various color spaces (RGB, YUV, YIQ, YCbCr, HSV),~~
+* predictive algorithms,
+* lossless compression (ByteRun, RLE, LZW, LZ77),
+* lossy compression ( DCT  transform + component subsampling),
+* app interface
+* bmp <-> new format
 
 ## Setup
 
