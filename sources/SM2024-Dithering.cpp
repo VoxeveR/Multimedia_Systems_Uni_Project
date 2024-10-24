@@ -29,7 +29,7 @@ float sredniaKrokG(){
     {
         for(int j = 0; j < i; j++)
         {
-            srednia += abs((int)paleta5[i].g - (int)paleta5[j].g);
+            srednia += abs(paleta5[i].g - paleta5[j].g);
             n++;
         }
     }
@@ -53,12 +53,9 @@ float sredniaKrokB(){
 void ditheringBayer(){
     SDL_Color kolor;
     int red, green, blue;
-
+    
     float m;
-
-    float krokR = 255/3;
-    float krokG = 255/3;
-    float krokB = 255;
+    float krok = 255/31;
 
     for(int y = 0; y < wysokosc; y++)
     {
@@ -68,9 +65,9 @@ void ditheringBayer(){
 
             m = ((dither[x % 8][y % 8] / 64) - 0.5);
 
-            red = ( kolor.r + krokR * m);
-            green = ( kolor.g + krokG * m);
-            blue = ( kolor.b + krokB * m);
+            red = ( kolor.r + krok * m);
+            green = ( kolor.g + krok * m);
+            blue = ( kolor.b + krok * m);
 
             if(red > 255) red = 255;
             if(red < 0) red = 0;
@@ -81,18 +78,11 @@ void ditheringBayer(){
             if(blue > 255) blue = 255;
             if(blue < 0) blue = 0;
 
-            SDL_Color nowyKolor = {(Uint8)red, (Uint8)green, (Uint8)blue};
-
-            Uint8 kolor5bit = z24RGBna5RGB(nowyKolor);
-            nowyKolor = z5RGBna24RGB(kolor5bit);
-
-            setPixel(x + szerokosc/2,y, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+            setRGB555(x + szerokosc/2, y, (Uint8)red, (Uint8)green, (Uint8)blue);
         }
     }
     SDL_UpdateWindowSurface(window);
 }
-
-
 
 void ditheringBayerPaletowy(){
     SDL_Color kolor;
