@@ -18,12 +18,12 @@ The goal of the project is to extend the raster graphics file specification prep
 **_NOTE:_**  Project is still under development
 
 ## TODO
-* ~~various color spaces (RGB, YUV, YIQ, YCbCr, HSV),~~
-* predictive algorithms,
-* lossless compression (ByteRun, RLE, LZW, LZ77),
-* lossy compression ( DCT  transform + component subsampling),
-* app interface
-* bmp <-> new format
+- [x] various color spaces (RGB, YUV, YIQ, YCbCr, HSV),
+- [ ] predictive algorithms,
+- [ ] lossless compression (ByteRun, RLE, LZW, LZ77),
+- [ ] lossy compression ( DCT  transform + component subsampling),
+- [ ] app interface
+- [ ] bmp <-> new format
 
 ## Setup
 
