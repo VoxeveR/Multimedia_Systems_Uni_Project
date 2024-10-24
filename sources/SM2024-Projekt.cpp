@@ -23,13 +23,15 @@ using namespace std;
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 
 int main(int argc, char* argv[]) {
+    system("cls");
+
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         printf("SDL_Init Error: %s\n", SDL_GetError());
         return EXIT_FAILURE;
     }
     bool czyBMP = false;
     string nazwa;
-
+    
     while(true){
         if(!window){
             cout << "Zaladuj plik bmp" << endl;
