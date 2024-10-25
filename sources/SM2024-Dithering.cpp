@@ -29,7 +29,7 @@ float sredniaKrokG(){
     {
         for(int j = 0; j < i; j++)
         {
-            srednia += abs(paleta5[i].g - paleta5[j].g);
+            srednia += abs((int)paleta5[i].g - (int)paleta5[j].g);
             n++;
         }
     }
@@ -83,6 +83,8 @@ void ditheringBayer(){
     }
     SDL_UpdateWindowSurface(window);
 }
+
+
 
 void ditheringBayerPaletowy(){
     SDL_Color kolor;
