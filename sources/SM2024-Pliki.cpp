@@ -6,11 +6,14 @@
 #include "../headers/SM2024-Pliki.h"
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Konwersje.h"
+#include "../headers/SM2024-Modele.h"
 
 using namespace std;
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++            ZAPIS-ODCZYT-PAKOWANIE             ++
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Uint16 data555[320*200];
 
 void zczytajDane(int xStart, int yStart){
     int k = 0;
@@ -28,7 +31,11 @@ void zczytajDane(int xStart, int yStart){
     }
 }
 
-
+void clearArray(){
+    //Clear array
+    int sizeArray = sizeof(data555)/sizeof(data555[0]);
+    fill(data555, data555+sizeArray, 0);
+}
 
 void saveRGB888(std::string fileName){
     ofstream output(fileName, ios::binary);
@@ -47,6 +54,123 @@ void saveRGB888(std::string fileName){
     output.write((char*)&data.comp1, sizeof(data.comp1));
     output.write((char*)&data.comp2, sizeof(data.comp2));
     output.write((char*)&data.comp3, sizeof(data.comp3));
+
+    output.close();
+}
+
+
+void saveYUV888(std::string fileName){
+    ofstream output(fileName, ios::binary);
+    dane888 data;
+    YUV yuv;
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            yuv = RGBtoYUV(x, y);
+            data.comp1[k] = yuv.Y;
+            data.comp2[k] = yuv.U;
+            data.comp3[k] = yuv.V;
+            k++;
+        }
+    }
+    output.write((char*)&data.comp1, sizeof(data.comp1));
+    output.write((char*)&data.comp2, sizeof(data.comp2));
+    output.write((char*)&data.comp3, sizeof(data.comp3));
+
+    output.close();
+}
+
+void saveYIQ888(std::string fileName){
+    ofstream output(fileName, ios::binary);
+    dane888 data;
+    YIQ yiq;
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            yiq = RGBtoYIQ(x, y);
+            data.comp1[k] = yiq.Y;
+            data.comp2[k] = yiq.Q;
+            data.comp3[k] = yiq.I;
+            k++;
+        }
+    }
+    output.write((char*)&data.comp1, sizeof(data.comp1));
+    output.write((char*)&data.comp2, sizeof(data.comp2));
+    output.write((char*)&data.comp3, sizeof(data.comp3));
+
+    output.close();
+}
+
+void saveYCbCr888(std::string fileName){
+    ofstream output(fileName, ios::binary);
+    dane888 data;
+    YCbCr ycbcr;
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            ycbcr = RGBtoYCbCr(x, y);
+            data.comp1[k] = ycbcr.Y;
+            data.comp2[k] = ycbcr.Cr;
+            data.comp3[k] = ycbcr.Cb;
+            k++;
+        }
+    }
+    output.write((char*)&data.comp1, sizeof(data.comp1));
+    output.write((char*)&data.comp2, sizeof(data.comp2));
+    output.write((char*)&data.comp3, sizeof(data.comp3));
+
+    output.close();
+}
+
+void saveHSL888(std::string fileName){
+    ofstream output(fileName, ios::binary);
+    dane888 data;
+    HSL hsl;
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            hsl = RGBtoHSL(x, y);
+            data.comp1[k] = hsl.H;
+            data.comp2[k] = hsl.S;
+            data.comp3[k] = hsl.L;
+            k++;
+        }
+    }
+    output.write((char*)&data.comp1, sizeof(data.comp1));
+    output.write((char*)&data.comp2, sizeof(data.comp2));
+    output.write((char*)&data.comp3, sizeof(data.comp3));
+
+    output.close();
+}
+
+void saveRGB555(std::string fileName){
+    clearArray();
+    ofstream output(fileName, ios::binary);
+    SDL_Color color;
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            data555[k] = getRGB555_(x, y);
+            k++;
+        }
+    }
+    output.write((char*)&data555, sizeof(data555));
+
+    output.close();
+}
+
+void saveRGB565(std::string fileName){
+    clearArray();
+    ofstream output(fileName, ios::binary);
+    SDL_Color color;
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            data555[k] = getRGB565_(x, y);
+            k++;
+        }
+    }
+    output.write((char*)&data555, sizeof(data555));
 
     output.close();
 }
