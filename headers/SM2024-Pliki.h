@@ -16,5 +16,27 @@ bool read(std::string nazwa);
 bool odczytajPlik_bmp(std::string nazwa);
 void saveRightHalfBMP(std::string nazwa);
 void ladujBMP(char const* nazwa, int x, int y);
+void saveRGB888(std::string fileName);
+void saveYUV888();
+void saveYIQ888();
+void saveYCbCr888();
+void saveHSL888();
+void saveRGB555();
+void saveRGB565();
+
+struct dane888
+{
+    Uint8 comp1[320*200];
+    Uint8 comp2[320*200];
+    Uint8 comp3[320*200];
+};
+
+struct daneProbkowanie
+{
+    Uint8 comp1[320*200];
+    Uint8 comp2[160*100];
+    Uint8 comp3[160*100];
+};
+
 
 #endif // SM2024_PLIKI_H_INCLUDED

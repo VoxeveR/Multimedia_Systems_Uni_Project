@@ -28,6 +28,29 @@ void zczytajDane(int xStart, int yStart){
     }
 }
 
+
+
+void saveRGB888(std::string fileName){
+    ofstream output(fileName, ios::binary);
+    SDL_Color color;
+    dane888 data;
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            color = getPixel(x, y);
+            data.comp1[k] = color.r;
+            data.comp2[k] = color.g;
+            data.comp3[k] = color.b;
+            k++;
+        }
+    }
+    output.write((char*)&data.comp1, sizeof(data.comp1));
+    output.write((char*)&data.comp2, sizeof(data.comp2));
+    output.write((char*)&data.comp3, sizeof(data.comp3));
+
+    output.close();
+}
+
 void unpack8Colors(Uint8* input, Uint8* output) {
     Uint8 tmp;
 

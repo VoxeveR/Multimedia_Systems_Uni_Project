@@ -11,6 +11,7 @@ all:
 		$(SRC_DIR)/SM2024-Paleta.cpp \
 		$(SRC_DIR)/SM2024-Pliki.cpp \
 		$(SRC_DIR)/SM2024-Zmienne.cpp \
+		$(SRC_DIR)/SM2024-Probkowanie.cpp \
 		-lmingw32 -lSDL2main -lSDL2
 
 run: all

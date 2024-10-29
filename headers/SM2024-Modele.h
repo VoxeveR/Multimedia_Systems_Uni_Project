@@ -28,15 +28,21 @@ struct HSL{
 
 SDL_Color YCbCrtoRGB(Uint8 y, Uint8 cb, Uint8 cr);
 YCbCr RGBtoYCbCr(int xx, int yy);
+void setYCbCr(int xx, int yy, Uint8 y, Uint8 cb, Uint8 cr);
+
 
 SDL_Color YUVtoRGB(Uint8 y, Uint8 u, Uint8 v);
 YUV RGBtoYUV(int xx, int yy);
+void setYUV(int xx, int yy, Uint8 y, Uint8 u, Uint8 v);
+
 
 SDL_Color YIQtoRGB(Uint8 y, Uint8 i, Uint8 q);
 YIQ RGBtoYIQ(int xx, int yy);
+void setYIQ(int xx, int yy, Uint8 y, Uint8 i, Uint8 q);
 
 SDL_Color HSLtoRGB(Uint8 h, Uint8 s, Uint8 l);
 HSL RGBtoHSL(int xx, int yy);
+void setHSL(int xx, int yy, Uint8 h, Uint8 s, Uint8 l);
 
 #endif // SM2024_MODELE_H_INCLUDED
 

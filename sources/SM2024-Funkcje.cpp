@@ -7,6 +7,7 @@
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Modele.h"
 #include "../headers/SM2024-Konwersje.h"
+#include "../headers/SM2024-Probkowanie.h"
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++                Funkcje napisane               ++
@@ -32,18 +33,21 @@ void RightToLeft(){
 //paleta narzucona
 void Funkcja1() {
     //initial project
-    identyfikator[0] = 'P';
-    identyfikator[1] = 'J';
-    tryb = 1;
-
     RightToLeft();
+    HSLSampling();
+    saveRGB888("test.jawa");
+    // identyfikator[0] = 'P';
+    // identyfikator[1] = 'J';
+    // tryb = 1;
 
-    if(dithering == 0) paletaNarzucona();
-    if(dithering == 1) ditheringFloyd();
-    if(dithering == 2) ditheringBayer();
+    // RightToLeft();
+
+    // if(dithering == 0) paletaNarzucona();
+    // if(dithering == 1) ditheringFloyd();
+    // if(dithering == 2) ditheringBayer();
 
     SDL_UpdateWindowSurface(window);
-    zczytajDane(szerokosc/2, 0);
+    // zczytajDane(szerokosc/2, 0);
 }
 
 //szarosc narzucona
