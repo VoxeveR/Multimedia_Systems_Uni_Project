@@ -122,7 +122,6 @@ SDL_Color getRGB555(int xx, int yy){
     return color;
 }
 
-
 Uint16 getRGB555_(int xx, int yy){
 
     SDL_Color color = getPixel(xx, yy);

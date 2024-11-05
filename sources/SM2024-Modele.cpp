@@ -35,6 +35,12 @@ YCbCr RGBtoYCbCr(int xx, int yy){
     return YCbCrret;
 }
 
+void setYCbCr(int xx, int yy, Uint8 y, Uint8 cb, Uint8 cr){
+    SDL_Color color = YCbCrtoRGB(y, cb, cr);
+
+    setPixel(xx, yy, color.r, color.g, color.b);
+}
+
 SDL_Color YUVtoRGB(Uint8 y, Uint8 u, Uint8 v){
 
     SDL_Color RGBret;
@@ -69,6 +75,12 @@ YUV RGBtoYUV(int xx, int yy){
     return YUVret;
 }
 
+void setYUV(int xx, int yy, Uint8 y, Uint8 u, Uint8 v){
+    SDL_Color color = YUVtoRGB(y, u, v);
+
+    setPixel(xx, yy, color.r, color.g, color.b);
+}
+
 SDL_Color YIQtoRGB(Uint8 y, Uint8 i, Uint8 q){
 
     SDL_Color RGBret;
@@ -83,6 +95,12 @@ SDL_Color YIQtoRGB(Uint8 y, Uint8 i, Uint8 q){
     RGBret.b = (b<0 ? 0 : (b>255 ? 255 : b));
 
     return RGBret;
+}
+
+void setYIQ(int xx, int yy, Uint8 y, Uint8 i, Uint8 q){
+    SDL_Color color = YIQtoRGB(y, i, q);
+
+    setPixel(xx, yy, color.r, color.g, color.b);
 }
 
 YIQ RGBtoYIQ(int xx, int yy){
@@ -230,4 +248,10 @@ HSL RGBtoHSL(int xx, int yy){
     HSLret.L = (int)l;
 
     return HSLret;
+}
+
+void setHSL(int xx, int yy, Uint8 h, Uint8 s, Uint8 l){
+    SDL_Color color = HSLtoRGB(h, s, l);
+
+    setPixel(xx, yy, color.r, color.g, color.b);
 }
