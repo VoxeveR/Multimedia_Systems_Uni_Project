@@ -15,7 +15,7 @@ using namespace std;
 
 Uint16 data555[320*200];
 
-void zczytajDane(int xStart, int yStart){
+void zczytajDane8x8(int xStart, int yStart){
     int k = 0;
     for(int y = yStart; y < yStart + wysokosc; y+=8) //wysokoscObrazka zamiast wysokosc wczesniej bylo
     {

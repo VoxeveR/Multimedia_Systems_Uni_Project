@@ -26,16 +26,112 @@ void RightToLeft(){
     SDL_UpdateWindowSurface(window);
 }
 
+enum FilterType {
+    NO_FILTER,
+    DIFFERENTIAL,
+    LINE_DIFFERENCE,
+    AVERAGING,
+    PAETH
+};
+
+void zczytajDane(dane888* dataArr){
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            SDL_Color color = getPixel(x, y);
+            dataArr->comp1[k] = color.r;
+            dataArr->comp2[k] = color.g;
+            dataArr->comp3[k] = color.b;
+            k++;
+        }
+    }
+}
+
+
+dane888 filterData(FilterType type){
+    dane888 data;
+    zczytajDane(&data);
+
+    switch(type){
+        case NO_FILTER: //FIXME: NO_MAKEUP
+            std::cout<<"to po co tego uzywasz?" << std::endl;
+        break;
+        case DIFFERENTIAL:
+            for(int i = 0; i < ((szerokosc / 2) * wysokosc) - 1; i++){
+                data.comp1[i+1] = data.comp1[i+1] - data.comp1[i];
+                data.comp2[i+1] = data.comp2[i+1] - data.comp2[i];
+                data.comp3[i+1] = data.comp3[i+1] - data.comp3[i];
+            }
+        break;
+        case LINE_DIFFERENCE: 
+            for(int i = 0; i < ((szerokosc / 2) * wysokosc) - (szerokosc / 2); i++){
+                data.comp1[i+szerokosc/2] = data.comp1[i+szerokosc/2] - data.comp1[i];
+                data.comp2[i+szerokosc/2] = data.comp2[i+szerokosc/2] - data.comp2[i];
+                data.comp3[i+szerokosc/2] = data.comp3[i+szerokosc/2] - data.comp3[i];
+            }
+        break;
+        case AVERAGING:
+        
+        break;
+        case PAETH:
+
+        break;
+        default:
+            std::cout<<"WRONG VALUE TRY AGAIN MY DEAR!!!!"<<std::endl;
+        break;
+    }
+    return data;
+}
+
+void unFilterData(dane888* data, FilterType type){
+
+ switch(type){
+        case NO_FILTER: //FIXME: NO_MAKEUP
+            std::cout<<"to po co tego uzywasz?" << std::endl;
+        break;
+        case DIFFERENTIAL:
+            for(int i = 1; i < (szerokosc / 2) * wysokosc; i++){
+                data->comp1[i] = data->comp1[i] + data->comp1[i - 1];
+                data->comp2[i] = data->comp2[i] + data->comp2[i - 1];
+                data->comp3[i] = data->comp3[i] + data->comp3[i - 1];
+            }
+        break;
+        case LINE_DIFFERENCE: 
+        break;
+        case AVERAGING:
+        
+        break;
+        case PAETH:
+
+        break;
+        default:
+            std::cout<<"WRONG VALUE TRY AGAIN MY DEAR!!!!"<<std::endl;
+        break;
+    }
+
+}
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++        Funkcje zmapowane do klawiszy          ++
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //paleta narzucona
 void Funkcja1() {
-    //initial project
     RightToLeft();
-    HSLSampling();
-    saveRGB888("test.jawa");
+
+    dane888 data = filterData(FilterType::DIFFERENTIAL);
+    unFilterData(&data, FilterType::DIFFERENTIAL);
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc / 2; x++){
+            setPixel(x + szerokosc / 2, y, data.comp1[k], data.comp2[k], data.comp3[k]);
+            k++;
+        }
+    }
+    
+    //initial project
+    //RightToLeft();
+    //HSLSampling();
+    //saveRGB888("test.jawa");
     // identyfikator[0] = 'P';
     // identyfikator[1] = 'J';
     // tryb = 1;
@@ -47,7 +143,7 @@ void Funkcja1() {
     // if(dithering == 2) ditheringBayer();
 
     SDL_UpdateWindowSurface(window);
-    // zczytajDane(szerokosc/2, 0);
+    // zczytajDane8x8(szerokosc/2, 0);
 }
 
 //szarosc narzucona
@@ -65,7 +161,7 @@ void Funkcja2() {
     if(dithering == 2) ditheringBayerBW();*/
 
     SDL_UpdateWindowSurface(window);
-   // zczytajDane(szerokosc/2, 0);
+   // zczytajDane8x8(szerokosc/2, 0);
 }
 
 //szarosc dedykowana
@@ -114,7 +210,7 @@ void Funkcja3() {
         ditheringBayerPaletowyBW();
     }
     SDL_UpdateWindowSurface(window);
-    zczytajDane(szerokosc/2, 0);
+    zczytajDane8x8(szerokosc/2, 0);
 }
 
 //paleta wykryta
@@ -126,11 +222,11 @@ void Funkcja4() {
     paletaWykryta();
 
     SDL_UpdateWindowSurface(window);
-    zczytajDane(szerokosc/2, 0);
+    zczytajDane8x8(szerokosc/2, 0);
 }
 
 //paleta dedykowana (median cut)
-void Funkcja5() {
+void Funkcja5() { //FIXME: do poprawy 8bit nie dziala
     identyfikator[0] = 'P';
     identyfikator[1] = 'J';
     tryb = 5;
@@ -176,7 +272,7 @@ void Funkcja5() {
         ditheringBayerPaletowy();
     }
     SDL_UpdateWindowSurface(window);
-    zczytajDane(szerokosc/2, 0);
+    zczytajDane8x8(szerokosc/2, 0);
 }
 
 //przelaczanie ditheringu
