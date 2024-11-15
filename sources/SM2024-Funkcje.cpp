@@ -67,12 +67,23 @@ dane888 filterData(FilterType type){
                 data.comp3[i+1] = tmp3 - data.comp3[i];
             }
         break;
-        case LINE_DIFFERENCE: 
+        case LINE_DIFFERENCE:
+
+
             for(int i = 0; i < ((szerokosc / 2) * wysokosc); i++){
-                data.comp1[i+szerokosc/2] = data.comp1[i+szerokosc/2] - data.comp1[i];
-                data.comp2[i+szerokosc/2] = data.comp2[i+szerokosc/2] - data.comp2[i];
-                data.comp3[i+szerokosc/2] = data.comp3[i+szerokosc/2] - data.comp3[i];
+                Uint8 tmp1 = data.comp1[i+szerokosc/2];
+                Uint8 tmp2 = data.comp2[i+szerokosc/2];
+                Uint8 tmp3 = data.comp3[i+szerokosc/2];
+
+                data.comp1[i+szerokosc/2] = tmp1 - data.comp1[i];
+                data.comp2[i+szerokosc/2] = tmp2 - data.comp2[i];
+                data.comp3[i+szerokosc/2] = tmp3 - data.comp3[i];
             }
+            /*for(int i = 0; i < ((szerokosc / 2) * wysokosc); i++){
+                data.comp1[i+(szerokosc/2)] = data.comp1[i+szerokosc/2] - data.comp1[i];
+                data.comp2[i+(szerokosc/2)] = data.comp2[i+szerokosc/2] - data.comp2[i];
+                data.comp3[i+(szerokosc/2)] = data.comp3[i+szerokosc/2] - data.comp3[i];
+            }*/
         break;
         case AVERAGING:
         
@@ -101,13 +112,13 @@ void unFilterData(dane888* data, FilterType type){
             }
         break;
         case LINE_DIFFERENCE: 
-        for(int i = ((szerokosc / 2) * wysokosc) - 1; i >= (szerokosc/2); i--){
+        for(int i = ((szerokosc / 2) * wysokosc); i > 0; i--){
                 data->comp1[i] = data->comp1[i] + data->comp1[i - (szerokosc / 2)];
                 data->comp2[i] = data->comp2[i] + data->comp2[i - (szerokosc / 2)];
                 data->comp3[i] = data->comp3[i] + data->comp3[i - (szerokosc / 2)];
-                std::cout << "i: " << i << ", i - (szerkosc/2) " << i - (szerokosc / 2) << ", szerkosc/2 " << szerokosc/2 << std::endl;
+                //std::cout << "i: " << i << ", i - (szerkosc/2) " << i - (szerokosc / 2) << ", szerkosc/2 " << szerokosc/2 << std::endl;
             }
-            std::cout << "debug" << std::endl;
+            //std::cout << "debug" << std::endl;
         break;
         case AVERAGING:
         
@@ -129,15 +140,31 @@ void unFilterData(dane888* data, FilterType type){
 void Funkcja1() {
     RightToLeft();
 
-    dane888 data = filterData(FilterType::LINE_DIFFERENCE);
-    unFilterData(&data, FilterType::LINE_DIFFERENCE);
-    int k = 0;
     for(int y = 0; y < wysokosc; y++){
         for(int x = 0; x < szerokosc / 2; x++){
+            setPixel(x + szerokosc/2, y , 0, 0, 0);
+        }
+    }
+
+    dane888 dataCopy;
+    zczytajDane(&dataCopy);
+    dane888 data = filterData(FilterType::LINE_DIFFERENCE);
+    
+    unFilterData(&data, FilterType::LINE_DIFFERENCE);
+    int k = 0;
+    std::cout << "Finished filter" << std::endl;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc / 2; x++){
+            if(dataCopy.comp1[k] != data.comp1[k] or dataCopy.comp2[k] != data.comp2[k] or dataCopy.comp3[k] != data.comp3[k]){
+                std::cout << "y: " << y << ", x: " << x << std::endl;
+                std::cout << "org1: " << (int)dataCopy.comp1[k] << ", org2: " << (int)dataCopy.comp2[k] << ", org3: " << (int)dataCopy.comp3[k] << std::endl;    
+                std::cout << "comp1: " << (int)data.comp1[k] << ", comp2: " << (int)data.comp2[k] << ", comp3: " << (int)data.comp3[k] << std::endl;
+            }
             setPixel(x + szerokosc / 2, y, data.comp1[k], data.comp2[k], data.comp3[k]);
             k++;
         }
     }
+    std::cout << "Finished painting" << std::endl;
     
     //initial project
     //RightToLeft();
