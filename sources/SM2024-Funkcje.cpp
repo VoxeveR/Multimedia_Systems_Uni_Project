@@ -68,24 +68,18 @@ dane888 filterData(FilterType type){
             }
         break;
         case LINE_DIFFERENCE:
-
-
-            for(int i = 0; i < ((szerokosc / 2) * wysokosc); i++){
-                Uint8 tmp1 = data.comp1[i+szerokosc/2];
-                Uint8 tmp2 = data.comp2[i+szerokosc/2];
-                Uint8 tmp3 = data.comp3[i+szerokosc/2];
-
-                data.comp1[i+szerokosc/2] = tmp1 - data.comp1[i];
-                data.comp2[i+szerokosc/2] = tmp2 - data.comp2[i];
-                data.comp3[i+szerokosc/2] = tmp3 - data.comp3[i];
+            for(int i = szerokosc/2; i < ((szerokosc / 2) * wysokosc); i++){
+                data.comp1[i] = data.comp1[i] - data.comp1[i-szerokosc/2];
+                data.comp2[i] = data.comp2[i] - data.comp2[i-szerokosc/2];
+                data.comp3[i] = data.comp3[i] - data.comp3[i-szerokosc/2];
             }
-            /*for(int i = 0; i < ((szerokosc / 2) * wysokosc); i++){
-                data.comp1[i+(szerokosc/2)] = data.comp1[i+szerokosc/2] - data.comp1[i];
-                data.comp2[i+(szerokosc/2)] = data.comp2[i+szerokosc/2] - data.comp2[i];
-                data.comp3[i+(szerokosc/2)] = data.comp3[i+szerokosc/2] - data.comp3[i];
-            }*/
         break;
         case AVERAGING:
+            for(int i = szerokosc/2+1; i < ((szerokosc / 2) * wysokosc); i++){
+                data.comp1[i] = data.comp1[i] - (data.comp1[i-szerokosc/2]+data.comp1[i-1])/2;
+                data.comp2[i] = data.comp2[i] - (data.comp2[i-szerokosc/2]+data.comp2[i-1])/2;
+                data.comp3[i] = data.comp3[i] - (data.comp3[i-szerokosc/2]+data.comp3[i-1])/2;
+            }
         
         break;
         case PAETH:
@@ -112,16 +106,19 @@ void unFilterData(dane888* data, FilterType type){
             }
         break;
         case LINE_DIFFERENCE: 
-        for(int i = ((szerokosc / 2) * wysokosc); i > 0; i--){
+        for(int i = ((szerokosc / 2) * wysokosc); i > (szerokosc/2); i--){
                 data->comp1[i] = data->comp1[i] + data->comp1[i - (szerokosc / 2)];
                 data->comp2[i] = data->comp2[i] + data->comp2[i - (szerokosc / 2)];
                 data->comp3[i] = data->comp3[i] + data->comp3[i - (szerokosc / 2)];
-                //std::cout << "i: " << i << ", i - (szerkosc/2) " << i - (szerokosc / 2) << ", szerkosc/2 " << szerokosc/2 << std::endl;
             }
-            //std::cout << "debug" << std::endl;
         break;
         case AVERAGING:
-        
+        //TODO: poprawić to filtorwanie powinno być git
+            for(int i =  ((szerokosc / 2) * wysokosc) - 1; i < (szerokosc/2)+1; i++){
+                data->comp1[i] = data->comp1[i] + (data->comp1[i+szerokosc/2]+data->comp1[i+1])/2;
+                data->comp2[i] = data->comp2[i] + (data->comp2[i+szerokosc/2]+data->comp2[i+1])/2;
+                data->comp3[i] = data->comp3[i] + (data->comp3[i+szerokosc/2]+data->comp3[i+1])/2;
+            }
         break;
         case PAETH:
 
@@ -148,9 +145,17 @@ void Funkcja1() {
 
     dane888 dataCopy;
     zczytajDane(&dataCopy);
-    dane888 data = filterData(FilterType::LINE_DIFFERENCE);
+    dane888 data = filterData(FilterType::AVERAGING);
     
-    unFilterData(&data, FilterType::LINE_DIFFERENCE);
+    for(int k = 0; k < (szerokosc / 2); k++){
+        if(dataCopy.comp1[k] != data.comp1[k] or dataCopy.comp2[k] != data.comp2[k] or dataCopy.comp3[k] != data.comp3[k]){
+            std::cout << "k: " << k << std::endl;
+            std::cout << "org1: " << (int)dataCopy.comp1[k] << ", org2: " << (int)dataCopy.comp2[k] << ", org3: " << (int)dataCopy.comp3[k] << std::endl;    
+            std::cout << "comp1: " << (int)data.comp1[k] << ", comp2: " << (int)data.comp2[k] << ", comp3: " << (int)data.comp3[k] << std::endl;
+        }
+    }
+
+    unFilterData(&data, FilterType::AVERAGING);
     int k = 0;
     std::cout << "Finished filter" << std::endl;
     for(int y = 0; y < wysokosc; y++){
@@ -164,7 +169,6 @@ void Funkcja1() {
             k++;
         }
     }
-    std::cout << "Finished painting" << std::endl;
     
     //initial project
     //RightToLeft();
