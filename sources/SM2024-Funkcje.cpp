@@ -47,13 +47,17 @@ void zczytajDane(dane888* dataArr){
     }
 }
 
+int Peath(Uint8 comp1, Uint8 comp2, Uint8 comp3){
+    int w = comp1 + comp2 - comp3;
+    return std::min(std::min((comp1 - w), (comp2 - w)), (comp3 - w));
+}
 
 dane888 filterData(FilterType type){
     dane888 data;
     zczytajDane(&data);
 
     switch(type){
-        case NO_FILTER: //FIXME: NO_MAKEUP
+        case NO_FILTER:
             std::cout<<"to po co tego uzywasz?" << std::endl;
         break;
         case DIFFERENTIAL:
@@ -83,7 +87,11 @@ dane888 filterData(FilterType type){
         
         break;
         case PAETH:
-
+            for(int i = szerokosc/2+1; i < ((szerokosc / 2) * wysokosc); i++){
+                data.comp1[i] = data.comp1[i] - Peath(data.comp1[i-1], data.comp2[i-szerokosc/2], data.comp3[i - (szerokosc/2) - 1]);
+                data.comp2[i] = data.comp2[i] - Peath(data.comp1[i-1], data.comp2[i-szerokosc/2], data.comp3[i - (szerokosc/2) - 1]);
+                data.comp3[i] = data.comp3[i] - Peath(data.comp1[i-1], data.comp2[i-szerokosc/2], data.comp3[i - (szerokosc/2) - 1]);
+            }
         break;
         default:
             std::cout<<"WRONG VALUE TRY AGAIN MY DEAR!!!!"<<std::endl;
@@ -94,7 +102,7 @@ dane888 filterData(FilterType type){
 
 void unFilterData(dane888* data, FilterType type){
     switch(type){
-        case NO_FILTER: //FIXME: NO_MAKEUP
+        case NO_FILTER:
             std::cout<<"to po co tego uzywasz?" << std::endl;
         break;
         case DIFFERENTIAL:
@@ -112,7 +120,6 @@ void unFilterData(dane888* data, FilterType type){
             }
         break;
         case AVERAGING:
-        //TODO: poprawić to filtorwanie powinno być git
             for(int i = ((szerokosc / 2) * wysokosc) - 1; i > (szerokosc/2); i--){
                 data->comp1[i] = data->comp1[i] + (data->comp1[i-szerokosc/2]+data->comp1[i-1])/2;
                 data->comp2[i] = data->comp2[i] + (data->comp2[i-szerokosc/2]+data->comp2[i-1])/2;
@@ -120,7 +127,11 @@ void unFilterData(dane888* data, FilterType type){
             }
         break;
         case PAETH: 
-
+            for(int i = ((szerokosc / 2) * wysokosc) - 1; i > (szerokosc/2); i--){
+                data->comp1[i] = data->comp1[i] + Peath(data->comp1[i-1], data->comp2[i-szerokosc/2], data->comp3[i - (szerokosc/2) - 1]);
+                data->comp2[i] = data->comp2[i] + Peath(data->comp1[i-1], data->comp2[i-szerokosc/2], data->comp3[i - (szerokosc/2) - 1]);
+                data->comp3[i] = data->comp3[i] + Peath(data->comp1[i-1], data->comp2[i-szerokosc/2], data->comp3[i - (szerokosc/2) - 1]);
+            }
         break;
         default:
             std::cout<<"WRONG VALUE TRY AGAIN MY DEAR!!!!"<<std::endl;
@@ -144,26 +155,13 @@ void Funkcja1() {
 
     dane888 dataCopy;
     zczytajDane(&dataCopy);
-    dane888 data = filterData(FilterType::AVERAGING);
-    
-    // for(int k = 0; k < (szerokosc / 2); k++){
-    //     if(dataCopy.comp1[k] != data.comp1[k] or dataCopy.comp2[k] != data.comp2[k] or dataCopy.comp3[k] != data.comp3[k]){
-    //         std::cout << "k: " << k << std::endl;
-    //         std::cout << "org1: " << (int)dataCopy.comp1[k] << ", org2: " << (int)dataCopy.comp2[k] << ", org3: " << (int)dataCopy.comp3[k] << std::endl;    
-    //         std::cout << "comp1: " << (int)data.comp1[k] << ", comp2: " << (int)data.comp2[k] << ", comp3: " << (int)data.comp3[k] << std::endl;
-    //     }
-    // }
+    dane888 data = filterData(FilterType::PAETH);
 
-    unFilterData(&data, FilterType::AVERAGING);
+    unFilterData(&data, FilterType::PAETH);
     int k = 0;
     std::cout << "Finished filter" << std::endl;
     for(int y = 0; y < wysokosc; y++){
         for(int x = 0; x < szerokosc / 2; x++){
-            // if(dataCopy.comp1[k] != data.comp1[k] or dataCopy.comp2[k] != data.comp2[k] or dataCopy.comp3[k] != data.comp3[k]){
-            //     std::cout << "y: " << y << ", x: " << x << std::endl;
-            //     std::cout << "org1: " << (int)dataCopy.comp1[k] << ", org2: " << (int)dataCopy.comp2[k] << ", org3: " << (int)dataCopy.comp3[k] << std::endl;    
-            //     std::cout << "comp1: " << (int)data.comp1[k] << ", comp2: " << (int)data.comp2[k] << ", comp3: " << (int)data.comp3[k] << std::endl;
-            // }
             setPixel(x + szerokosc / 2, y, data.comp1[k], data.comp2[k], data.comp3[k]);
             k++;
         }
