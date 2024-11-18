@@ -7,6 +7,7 @@
 #include <fstream>
 #include <SDL2/SDL.h>
 
+void zczytajDane(dane888* dataArr);
 void zczytajDane8x8(int xStart, int yStart);
 //void unpack8Colors(Uint8* input, Uint8* output);
 //void pack8Colors(Uint8* input, Uint8* output);

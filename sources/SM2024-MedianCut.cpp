@@ -3,6 +3,7 @@
 #include "../headers/SM2024-Zmienne.h"
 #include "../headers/SM2024-Funkcje.h"
 #include "../headers/SM2024-Dithering.h"
+
 //ok
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++                 MEDIAN CUT                    ++

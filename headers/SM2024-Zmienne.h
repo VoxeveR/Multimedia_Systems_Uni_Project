@@ -39,6 +39,13 @@ struct dane888
     Uint8 comp3[320*200];
 };
 
+enum FilterType {
+    NO_FILTER,
+    DIFFERENTIAL,
+    LINE_DIFFERENCE,
+    AVERAGING,
+    PAETH
+};
 
 extern float dither[8][8];
 

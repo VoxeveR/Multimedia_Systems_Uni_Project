@@ -1,0 +1,8 @@
+// podstawowe funkcje
+#ifndef SM2024_KOMPRESJE_H_INCLUDED
+#define SM2024_KOMPRESJE_H_INCLUDED
+
+
+
+
+#endif // SM2024_FUNKCJE_H_INCLUDED

@@ -5,6 +5,7 @@
 #include "../headers/SM2024-Pliki.h"
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Modele.h"
+#include "../headers/SM2024-Kompresje.h"
 
 Uint8 z24RGBna5RGB(SDL_Color kolor){
 

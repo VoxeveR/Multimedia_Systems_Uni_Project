@@ -15,6 +15,19 @@ using namespace std;
 
 Uint16 data555[320*200];
 
+void zczytajDane(dane888* dataArr){
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            SDL_Color color = getPixel(x, y);
+            dataArr->comp1[k] = color.r;
+            dataArr->comp2[k] = color.g;
+            dataArr->comp3[k] = color.b;
+            k++;
+        }
+    }
+}
+
 void zczytajDane8x8(int xStart, int yStart){
     int k = 0;
     for(int y = yStart; y < yStart + wysokosc; y+=8) //wysokoscObrazka zamiast wysokosc wczesniej bylo
