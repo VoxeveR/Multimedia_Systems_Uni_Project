@@ -7,7 +7,7 @@
 #include <fstream>
 #include <SDL2/SDL.h>
 
-void zczytajDane(int xStart, int yStart);
+void zczytajDane8x8(int xStart, int yStart);
 //void unpack8Colors(Uint8* input, Uint8* output);
 //void pack8Colors(Uint8* input, Uint8* output);
 void save(std::string nazwa);
@@ -23,15 +23,6 @@ void saveYCbCr888(std::string fileName);
 void saveHSL888(std::string fileName);
 void saveRGB555(std::string fileName);
 void saveRGB565(std::string fileName);
-
-struct dane888
-{
-    Uint8 comp1[320*200];
-    Uint8 comp2[320*200];
-    Uint8 comp3[320*200];
-};
-
-
 
 struct daneProbkowanie
 {
