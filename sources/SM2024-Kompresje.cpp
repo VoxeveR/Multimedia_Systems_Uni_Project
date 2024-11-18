@@ -10,7 +10,7 @@
 
 using namespace std;
 
-void ByteRunKompresja(int wejscie[], int dlugosc){
+void ByteRunKompresja(Uint8 *wejscie, int dlugosc){
     
     int i = 0;
 
@@ -46,7 +46,7 @@ void ByteRunKompresja(int wejscie[], int dlugosc){
     }
 }
 
-void ByteRunDekompresja(int wejscie[], int dlugosc){
+void ByteRunDekompresja(Uint8 *wejscie, int dlugosc){
     int j = 0;
     while (j < dlugosc){
         if(wejscie[j] < 0){

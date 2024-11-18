@@ -78,10 +78,38 @@ void Funkcja1() {
     // zczytajDane8x8(szerokosc/2, 0);
 }
 
+void zczytajDaneBW(Uint8* dataArr){
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            SDL_Color color = getPixel(x, y);
+            dataArr[k] = z24RGBna8BW(color);
+            k++;
+        }
+    }
+}
+
 //szarosc narzucona
 void Funkcja2() {
 
     RightToLeft();
+
+    Uint8 dane[320*200];
+
+    zczytajDaneBW(dane);
+
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            setPixel(x + szerokosc/2, y, dane[k], dane[k], dane[k]);
+            k++;
+        }
+    }
+
+    ByteRunKompresja(dane, sizeof(dane));
+
+    saveBW("test.jawa", dane, sizeof(dane));
+
    /* identyfikator[0] = 'P';
     identyfikator[1] = 'J';
     tryb = 2;

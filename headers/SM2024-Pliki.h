@@ -17,6 +17,7 @@ bool read(std::string nazwa);
 bool odczytajPlik_bmp(std::string nazwa);
 void saveRightHalfBMP(std::string nazwa);
 void ladujBMP(char const* nazwa, int x, int y);
+void saveBW(std::string fileName, Uint8* dane, int size);
 void saveRGB888(std::string fileName);
 void saveYUV888(std::string fileName);
 void saveYIQ888(std::string fileName);

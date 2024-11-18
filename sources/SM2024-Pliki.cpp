@@ -28,6 +28,8 @@ void zczytajDane(dane888* dataArr){
     }
 }
 
+
+
 void zczytajDane8x8(int xStart, int yStart){
     int k = 0;
     for(int y = yStart; y < yStart + wysokosc; y+=8) //wysokoscObrazka zamiast wysokosc wczesniej bylo
@@ -48,6 +50,14 @@ void clearArray(){
     //Clear array
     int sizeArray = sizeof(data555)/sizeof(data555[0]);
     fill(data555, data555+sizeArray, 0);
+}
+
+void saveBW(std::string fileName, Uint8* dane, int size){
+    ofstream output(fileName, ios::binary);
+    
+    output.write((char*)dane, size);
+
+    output.close();
 }
 
 void saveRGB888(std::string fileName){
