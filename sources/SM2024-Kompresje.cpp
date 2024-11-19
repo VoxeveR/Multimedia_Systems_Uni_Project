@@ -10,11 +10,14 @@
 
 using namespace std;
 
-void ByteRunKompresja(Uint8 *wejscie, int dlugosc){
-    
-    int i = 0;
+void ByteRunKompresja(Uint8 *wejscie, int dlugosc, std::string fileName) {
 
-    while (i < dlugosc){
+    std::string outputFile = fileName;
+    int counter = 0;
+    int i = 0;
+    Uint8 resultArr[dlugosc];
+    
+    while (i < dlugosc) {
         if ((i < dlugosc - 1) && (wejscie[i] == wejscie[i + 1])){
             int j = 0;
             while((i+  j < dlugosc - 1) && (wejscie[i + j] == wejscie[i + 1 + j])
@@ -22,7 +25,14 @@ void ByteRunKompresja(Uint8 *wejscie, int dlugosc){
                 j++;
             }
 
-            cout<<"("<< -j << "), " << (int)wejscie[i + j] << ", ";
+            // cout<<"("<< -j << "), " << (int)wejscie[i + j] << ", ";
+
+
+            std::cout << "ELement: " << -j << std::endl;
+            resultArr[counter] == -j;
+            std::cout << "Value: " << (int) wejscie[i + j] << std::endl;
+            resultArr[++counter] == wejscie[i + j];
+            counter++;
             
             i += (j+1);
         } else {
@@ -36,14 +46,23 @@ void ByteRunKompresja(Uint8 *wejscie, int dlugosc){
                 j++;
             }
 
-            cout<<"("<< (j - 1) << "), ";
+           // cout<<"("<< (j - 1) << "), ";
+            resultArr[counter++] == j - 1;
+
+            
             for(int k = 0; k < j; k++){
-                cout << (int)wejscie[i + k] << ", ";
+                // cout << (int) wejscie[i + k] << ", ";
+                resultArr[counter++] == wejscie[i + j];
             }
 
             i += j;
         }
     }
+
+    for (size_t i = 0; i < dlugosc; i++) {
+        std::cout << (int)resultArr[i] << " ";
+    };
+
 }
 
 void ByteRunDekompresja(Uint8 *wejscie, int dlugosc){
@@ -54,6 +73,7 @@ void ByteRunDekompresja(Uint8 *wejscie, int dlugosc){
             j++;
             for(int i = 0; i < iters; i ++){
                 std::cout << wejscie[j] << ", ";
+
             }
         } else {
             int iters = wejscie[j] + 1;

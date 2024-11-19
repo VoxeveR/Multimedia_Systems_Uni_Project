@@ -94,21 +94,30 @@ void Funkcja2() {
 
     RightToLeft();
 
-    Uint8 dane[320*200];
+    // Uint8 dane[320*200];
 
-    zczytajDaneBW(dane);
+    // zczytajDaneBW(dane);
 
-    int k = 0;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            setPixel(x + szerokosc/2, y, dane[k], dane[k], dane[k]);
-            k++;
-        }
-    }
+    // int k = 0;
+    // for(int y = 0; y < wysokosc; y++){
+    //     for(int x = 0; x < szerokosc/2; x++){
+    //         setPixel(x + szerokosc/2, y, dane[k], dane[k], dane[k]);
+    //         k++;
+    //     }
+    // }
 
-    ByteRunKompresja(dane, sizeof(dane));
+    Uint8 *array = new Uint8[24]{0,0,0,0,0,1,2,3,4,5,6,7,7,7,8,8,8,8,8,8,2,2,1,3};
 
-    saveBW("test.jawa", dane, sizeof(dane));
+
+    int arrayLength = sizeof(array) / sizeof(array[0]);
+
+   ByteRunKompresja(array, arrayLength, "output");
+
+
+
+    
+
+    // saveBW("test.jawa", dane, sizeof(dane));
 
    /* identyfikator[0] = 'P';
     identyfikator[1] = 'J';
