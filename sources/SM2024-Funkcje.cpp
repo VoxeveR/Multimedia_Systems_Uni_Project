@@ -106,12 +106,10 @@ void Funkcja2() {
     //     }
     // }
 
-    Uint8 *array = new Uint8[24]{0,0,0,0,0,1,2,3,4,5,6,7,7,7,8,8,8,8,8,8,2,2,1,3};
+    std::vector<Uint8> array = {0,0,0,0,0,1,2,3,4,5,6,7,7,7,8,8,8,8,8,8,2,2,1,3};
 
 
-    int arrayLength = sizeof(array) / sizeof(array[0]);
-
-   ByteRunKompresja(array, arrayLength, "output");
+    ByteRunKompresja(array, array.size(), "output");
 
 
 

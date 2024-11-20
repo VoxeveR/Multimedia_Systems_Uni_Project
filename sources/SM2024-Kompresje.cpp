@@ -6,39 +6,35 @@
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Modele.h"
 
-#include <iostream>
 
 using namespace std;
 
-void ByteRunKompresja(Uint8 *wejscie, int dlugosc, std::string fileName) {
-
+std::vector<Sint8> ByteRunKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileName) {
     std::string outputFile = fileName;
     int counter = 0;
     int i = 0;
-    Uint8 resultArr[dlugosc];
+    std::vector<Sint8> resultArr;
     
     while (i < dlugosc) {
         if ((i < dlugosc - 1) && (wejscie[i] == wejscie[i + 1])){
             int j = 0;
-            while((i+  j < dlugosc - 1) && (wejscie[i + j] == wejscie[i + 1 + j])
-            && (j < 127)){
+            while((i+  j < dlugosc - 1) && (wejscie[i + j] == wejscie[i + 1 + j]) && (j < 127)){
                 j++;
             }
 
-            // cout<<"("<< -j << "), " << (int)wejscie[i + j] << ", ";
+            cout<<"("<< -j << "), " << (int)wejscie[i + j] << ", ";
 
 
-            std::cout << "ELement: " << -j << std::endl;
-            resultArr[counter] == -j;
-            std::cout << "Value: " << (int) wejscie[i + j] << std::endl;
-            resultArr[++counter] == wejscie[i + j];
+            //std::cout << "ELement: " << -j << std::endl;
+            resultArr.push_back(-j);
+            //std::cout << "Value: " << (int) wejscie[i + j] << std::endl;
+            resultArr.push_back(wejscie[i + j]);
             counter++;
             
             i += (j+1);
         } else {
             int j = 0;
-            while((i + j < dlugosc - 1) && ((wejscie[i + j] != wejscie[i + j + 1])) 
-            && (j < 128)){
+            while((i + j < dlugosc - 1) && ((wejscie[i + j] != wejscie[i + j + 1])) && (j < 128)){
                 j++;
             }
 
@@ -46,23 +42,24 @@ void ByteRunKompresja(Uint8 *wejscie, int dlugosc, std::string fileName) {
                 j++;
             }
 
-           // cout<<"("<< (j - 1) << "), ";
-            resultArr[counter++] == j - 1;
+            std::cout<<"("<< (j - 1) << "), ";
+            resultArr.push_back(j - 1);
 
             
             for(int k = 0; k < j; k++){
-                // cout << (int) wejscie[i + k] << ", ";
-                resultArr[counter++] == wejscie[i + j];
+                std::cout << (int) wejscie[i + k] << ", ";
+                resultArr.push_back(wejscie[i + k]);
             }
 
             i += j;
         }
     }
-
-    for (size_t i = 0; i < dlugosc; i++) {
-        std::cout << (int)resultArr[i] << " ";
-    };
-
+    std::cout << "\n";
+    for (size_t i = 0; i < resultArr.size(); i++) {
+        std::cout << (int)resultArr[i] << ", ";
+    }
+    std::cout << "\n";
+    return resultArr;
 }
 
 void ByteRunDekompresja(Uint8 *wejscie, int dlugosc){
