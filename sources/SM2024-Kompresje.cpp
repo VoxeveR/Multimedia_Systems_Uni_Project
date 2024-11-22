@@ -7,7 +7,6 @@
 #include "../headers/SM2024-Modele.h"
 
 
-using namespace std;
 
 void ByteRunKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileName) {
     int counter = 0;
@@ -73,14 +72,14 @@ void ByteRunDekompresja(std::string fileName){
             int iters = (-1) * wejscie[j] + 1;
             j++;
             for(int i = 0; i < iters; i ++){
-                std::cout << (int)wejscie[j] << ", ";
+               // std::cout << (int)wejscie[j] << ", ";
                 output.push_back(wejscie[j]);
             }
         } else {
             int iters = wejscie[j] + 1;
             for(int i = 0; i < iters; i ++){
                 j++;
-                std::cout << (int)wejscie[j] << ", ";
+                //std::cout << (int)wejscie[j] << ", ";
                 output.push_back(wejscie[j]);
             }
         }

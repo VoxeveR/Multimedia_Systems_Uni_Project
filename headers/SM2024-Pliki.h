@@ -28,6 +28,7 @@ void saveYCbCr888(std::string fileName);
 void saveHSL888(std::string fileName);
 void saveRGB555(std::string fileName);
 void saveRGB565(std::string fileName);
+
 template <typename T>
 void saveVector(std::vector<T> v, std::string fileName){
     std::ofstream output(fileName, std::ios::binary);
@@ -42,6 +43,7 @@ void saveVector(std::vector<T> v, std::string fileName){
     std::cout << "Zapisano plik \n";
     output.close();
 };
+
 template <typename T>
 std::vector<T> readVector(std::string fileName){
     std::ifstream input(fileName, std::ios::binary | std::ios::ate);
@@ -57,7 +59,7 @@ std::vector<T> readVector(std::string fileName){
 
     std::vector<T> buff(fileSize / sizeof(T));
     
-    if(input.read(reinterpret_cast<char*>(buff.data()), fileSize)){
+    if(!input.read(reinterpret_cast<char*>(buff.data()), fileSize)){
         std::cerr << "Bład podczas odczytu\n";
         exit(1);
     }
