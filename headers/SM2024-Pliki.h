@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <fstream>
+#include <iostream>
+#include <vector>
+#include <string>
 #include <SDL2/SDL.h>
 
 void zczytajDane(dane888* dataArr);
@@ -25,6 +28,44 @@ void saveYCbCr888(std::string fileName);
 void saveHSL888(std::string fileName);
 void saveRGB555(std::string fileName);
 void saveRGB565(std::string fileName);
+template <typename T>
+void saveVector(std::vector<T> v, std::string fileName){
+    std::ofstream output(fileName, std::ios::binary);
+
+    if (!output) {
+        std::cerr << "Nie udało się otworzyć pliku do zapisu: " << fileName << "\n";
+        exit(1);
+    }
+
+
+    output.write(reinterpret_cast<char*>(v.data()), v.size()*sizeof(T));
+    std::cout << "Zapisano plik \n";
+    output.close();
+};
+template <typename T>
+std::vector<T> readVector(std::string fileName){
+    std::ifstream input(fileName, std::ios::binary | std::ios::ate);
+    //wejscie.read( (char*)&paleta5[i].r, sizeof(Uint8));
+    if (!input) {
+        std::cerr << "Nie udało się otworzyć pliku: " << fileName << "\n";
+        exit(1);
+    }
+
+    std::streamsize fileSize = input.tellg();
+    
+    input.seekg(0, std::ios::beg);
+
+    std::vector<T> buff(fileSize / sizeof(T));
+    
+    if(input.read(reinterpret_cast<char*>(buff.data()), fileSize)){
+        std::cerr << "Bład podczas odczytu\n";
+        exit(1);
+    }
+
+    std::cout << "Odczytano plik\n";
+
+  return buff;
+};
 
 struct daneProbkowanie
 {

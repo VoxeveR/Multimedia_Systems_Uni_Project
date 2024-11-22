@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 
-std::vector<Sint8> ByteRunKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileName);
-void ByteRunDekompresja(Uint8 *wejscie, int dlugosc);
+void ByteRunKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileName);
+void ByteRunDekompresja(std::string fileName);
 
 #endif // SM2024_FUNKCJE_H_INCLUDED

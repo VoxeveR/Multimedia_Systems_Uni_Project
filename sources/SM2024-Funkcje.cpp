@@ -78,15 +78,17 @@ void Funkcja1() {
     // zczytajDane8x8(szerokosc/2, 0);
 }
 
-void zczytajDaneBW(Uint8* dataArr){
-    int k = 0;
+
+std::vector<Uint8> zczytajDaneBW(){
+    std::vector<Uint8> output;
     for(int y = 0; y < wysokosc; y++){
         for(int x = 0; x < szerokosc/2; x++){
             SDL_Color color = getPixel(x, y);
-            dataArr[k] = z24RGBna8BW(color);
-            k++;
+            output.push_back(z24RGBna8BW(color));
         }
     }
+
+    return output;
 }
 
 //szarosc narzucona
@@ -106,11 +108,12 @@ void Funkcja2() {
     //     }
     // }
 
-    std::vector<Uint8> array = {0,0,0,0,0,1,2,3,4,5,6,7,7,7,8,8,8,8,8,8,2,2,1,3};
 
+    std::vector<Uint8> array = zczytajDaneBW();
+    std::cout << "Zrobiono konwersję na BW\n";
+    ByteRunKompresja(array, array.size(), "test.jawa");
 
-    ByteRunKompresja(array, array.size(), "output");
-
+    ByteRunDekompresja("test.jawa");
 
 
     

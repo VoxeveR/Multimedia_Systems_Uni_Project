@@ -60,6 +60,8 @@ void saveBW(std::string fileName, Uint8* dane, int size){
     output.close();
 }
 
+
+
 void saveRGB888(std::string fileName){
     ofstream output(fileName, ios::binary);
     SDL_Color color;
