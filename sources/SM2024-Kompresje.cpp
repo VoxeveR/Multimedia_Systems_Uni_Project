@@ -9,7 +9,6 @@
 
 
 void ByteRunKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileName) {
-    int counter = 0;
     int i = 0;
     std::vector<Sint8> resultArr;
     
@@ -23,11 +22,10 @@ void ByteRunKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileN
             //cout<<"("<< -j << "), " << (int)wejscie[i + j] << ", ";
 
 
-            //std::cout << "ELement: " << -j << std::endl;
+            //// std::cout << "ELement: " << -j << std::endl;
             resultArr.push_back(-j);
-            //std::cout << "Value: " << (int) wejscie[i + j] << std::endl;
+            //// std::cout << "Value: " << (int) wejscie[i + j] << std::endl;
             resultArr.push_back(wejscie[i + j]);
-            counter++;
             
             i += (j+1);
         } else {
@@ -40,24 +38,24 @@ void ByteRunKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileN
                 j++;
             }
 
-           // std::cout<<"("<< (j - 1) << "), ";
+           // // std::cout<<"("<< (j - 1) << "), ";
             resultArr.push_back(j - 1);
 
             
             for(int k = 0; k < j; k++){
-              //  std::cout << (int) wejscie[i + k] << ", ";
+              //  // std::cout << (int) wejscie[i + k] << ", ";
                 resultArr.push_back(wejscie[i + k]);
             }
 
             i += j;
         }
     }
-    // std::cout << "\n";
+    // // std::cout << "\n";
     // for (size_t i = 0; i < resultArr.size(); i++) {
-    //     std::cout << (int)resultArr[i] << ", ";
+    //     // std::cout << (int)resultArr[i] << ", ";
     // }
-    // std::cout << "\n";
-    std::cout << "Kompresja udana\n";
+    // // std::cout << "\n";
+    // std::cout << "Kompresja udana\n";
     saveVector<Sint8>(resultArr, fileName);
 }
 
@@ -72,14 +70,14 @@ void ByteRunDekompresja(std::string fileName){
             int iters = (-1) * wejscie[j] + 1;
             j++;
             for(int i = 0; i < iters; i ++){
-               // std::cout << (int)wejscie[j] << ", ";
+               // // std::cout << (int)wejscie[j] << ", ";
                 output.push_back(wejscie[j]);
             }
         } else {
             int iters = wejscie[j] + 1;
             for(int i = 0; i < iters; i ++){
                 j++;
-                //std::cout << (int)wejscie[j] << ", ";
+                //// std::cout << (int)wejscie[j] << ", ";
                 output.push_back(wejscie[j]);
             }
         }
@@ -93,3 +91,100 @@ void ByteRunDekompresja(std::string fileName){
         }
     }
 }
+
+
+void RLEKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileName){
+    int i = 0;
+    std::vector<Uint8> resultArr;
+
+    while (i < dlugosc) {
+
+        if ((i < dlugosc - 1) && (wejscie[i] == wejscie[i + 1])){
+            
+            int j = 0;
+            while ((i + j < dlugosc - 1) && (wejscie[i + j] == wejscie[i + j + 1]) 
+            && (j < 254)){
+                j++;
+            }
+
+            // std::cout<<"("<<(j + 1)<<"), " << wejscie[i+j]<<", ";
+
+            resultArr.push_back((j+1));
+            resultArr.push_back(wejscie[i+j]);
+
+            i += (j+1);
+        } else {
+            
+            int j = 0;
+
+            while ((i + j < dlugosc - 1) && (wejscie[i + j] != wejscie[i + j + 1]) 
+            && (j < 254)){
+                j++;
+            }
+
+            if( (i+j == dlugosc - 1) && (j < 254)){
+                j++;
+            }
+
+            // std::cout << (int) 0 << ", " << j << ", ";
+            resultArr.push_back((int)0);
+            resultArr.push_back(j);
+            
+            for(int k = 0; k < j; k++){
+                // std::cout << wejscie[i + k] << ", ";
+                resultArr.push_back(wejscie[i + k]);
+            }
+
+            if (j % 2 != 0){
+                // std::cout << (int) 0 << ", ";
+                resultArr.push_back((int)0);
+            }
+
+            i += j;
+        }
+    }
+
+    // std::cout << "Kompresja udana\n";
+    saveVector<Uint8>(resultArr, fileName);
+}
+
+void RLEDekompresja(std::string fileName){
+    int j = 0;
+    std::vector<Uint8> wejscie = readVector<Uint8>(fileName);
+    int dlugosc = wejscie.size();
+    std::vector<Uint8> output;
+    while (j < dlugosc){
+        //// std::cout <<"W" << wejscie[j] << " ";
+        if(wejscie[j] > 0){
+            int iter = wejscie[j];
+           // // std::cout <<"I" << iter << " ";
+            j++;
+            for(int i = 0; i < iter; i++){
+                // std::cout << wejscie[j] << ", ";
+                output.push_back(wejscie[j]);
+            }
+        } else if ( wejscie[j] == 0){
+            j++;
+            int iter = wejscie[j];
+            for(int i = 0; i < iter; i++){
+                j++;
+                // std::cout << wejscie[j] << ", ";
+                output.push_back(wejscie[j]);
+            }
+
+            if(iter % 2 != 0){
+                j++;
+            }
+        }
+        j++;
+    }
+
+
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            setPixel(x, y, output[k], output[k], output[k]);
+            k++;
+        }
+    }
+} 

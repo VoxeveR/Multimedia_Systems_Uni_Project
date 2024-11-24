@@ -111,9 +111,9 @@ void Funkcja2() {
 
     std::vector<Uint8> array = zczytajDaneBW();
     std::cout << "Zrobiono konwersję na BW\n";
-    ByteRunKompresja(array, array.size(), "test.jawa");
+    RLEKompresja(array, array.size(), "test.jawa");
 
-    ByteRunDekompresja("test.jawa");
+    RLEDekompresja("test.jawa");
 
 
     
