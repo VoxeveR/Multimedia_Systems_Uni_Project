@@ -5,7 +5,7 @@
 #include "../headers/SM2024-Pliki.h"
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Modele.h"
-
+#include "../headers/SM2024-Kompresje.h"
 
 
 void ByteRunKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileName) {
@@ -188,3 +188,209 @@ void RLEDekompresja(std::string fileName){
         }
     }
 } 
+
+//LZW
+
+int rozmiarSlownika = 0;
+slowo slownik[65535];
+
+
+slowo noweSlowo() {
+    slowo noweSlowo;
+    noweSlowo.kod = 0;
+    noweSlowo.dlugosc = 0;
+    noweSlowo.wSlowniku = false;
+    return noweSlowo;
+}
+
+slowo noweSlowo(Uint8 znak){
+    slowo noweSlowo;
+    noweSlowo.kod = 0;
+    noweSlowo.dlugosc = 1;
+    noweSlowo.element[0] = znak;
+    noweSlowo.wSlowniku = false;
+    return noweSlowo;
+}
+
+slowo polaczSlowo(slowo aktualneSlowo, Uint8 znak){
+    slowo noweSlowo;
+
+    if(aktualneSlowo.dlugosc < 4096){
+        noweSlowo.kod = 0;
+        noweSlowo.dlugosc = aktualneSlowo.dlugosc + 1;
+        noweSlowo.wSlowniku = false;
+        std::copy(std::begin(aktualneSlowo.element), std::end(aktualneSlowo.element), std::begin(noweSlowo.element));
+        noweSlowo.element[aktualneSlowo.dlugosc] = znak;
+        return noweSlowo;
+    } else {
+        std::cout << "UWAGA! Przepelnienie rozmiar uznakow w pojedynczym slowie" << std::endl;
+        noweSlowo.kod = 0;
+        noweSlowo.dlugosc = 0;
+        noweSlowo.wSlowniku = false;
+        noweSlowo.element[0] = znak;
+        return noweSlowo;
+    }
+}
+
+bool porownajSlowa(slowo slowo1, slowo slowo2){
+    if (slowo1.dlugosc != slowo2.dlugosc) return false;
+    for (int s = 0; s < slowo1.dlugosc; s++){
+        if(slowo1.element[s] != slowo2.element[s]) return false;
+    }
+    return true;
+}
+
+int znajdzWSlowniku(slowo szukany){
+    for (int nr = 0; nr < rozmiarSlownika; nr++){
+        if (porownajSlowa(slownik[nr], szukany)) return nr;
+    }
+    return -1;
+}
+
+void wyswietlSlowo(slowo aktualneSlowo){
+    if(aktualneSlowo.wSlowniku){
+        std::cout << "[" << aktualneSlowo.kod << "] ";
+    } else {
+        std::cout << "[X]";
+    }
+    for (int s = 0; s < aktualneSlowo.dlugosc; s++){
+        std::cout << (int)aktualneSlowo.element[s];
+        if(s < aktualneSlowo.dlugosc - 1) std::cout << ", ";
+    }
+    std::cout << std::endl;
+}
+
+void wyswietlSlownik() {
+    std::cout << "Slownik:" << std::endl;
+    for (int i = 0; i < rozmiarSlownika; i++) {
+        wyswietlSlowo(slownik[i]);
+    }
+    std::cout << "Liczba slow w slowniku: " << rozmiarSlownika << std::endl;
+}
+
+int dodajDoSlownika(slowo nowy, bool czyWyswietlac = true){
+    if (rozmiarSlownika < 65536){
+        Uint16 nr = rozmiarSlownika;
+        slownik[nr].kod = nr;
+        slownik[nr].dlugosc = nowy.dlugosc;
+        std::copy(std::begin(nowy.element), std::end(nowy.element), std::begin(slownik[nr].element));
+        slownik[nr].wSlowniku = true;
+        if (czyWyswietlac) wyswietlSlowo(slownik[nr]);
+        rozmiarSlownika++;
+        return nr;
+    }
+    return -1;
+}
+
+void LZWinicjalizacja(){
+    rozmiarSlownika = 0;
+
+    for(int s = 0; s < 65536; s++){
+        slownik[s].kod = 0;
+        slownik[s].dlugosc = 0;
+        slownik[s].wSlowniku = false;
+        memset(slownik[s].element, 0, sizeof(slownik[s].element));
+    }
+
+    slowo noweSlowo;
+    for(int s = 0; s < 4; s++){
+        noweSlowo.dlugosc = 1;
+        noweSlowo.element[0] = s;
+        noweSlowo.kod = dodajDoSlownika(noweSlowo);
+    }
+}
+void LZWKompresja(int wejscie[], int dlugosc){
+    LZWinicjalizacja();
+    slowo aktualneSlowo = noweSlowo();
+    slowo slowoZnak;
+    Uint8 znak;
+    int kod;
+    int i = 0;
+
+    std::vector<Uint16> resultArray;
+
+    while (i < dlugosc){
+        znak = wejscie[i];
+        std::cout << "Pobieramy znak" << (int)znak << " z pozycji " << i << std::endl;
+        slowoZnak = polaczSlowo(aktualneSlowo, znak);
+        std::cout << "Aktualne slowo: ";
+        wyswietlSlowo(aktualneSlowo);
+        std::cout << "Slowo + znak: ";
+        wyswietlSlowo(slowoZnak);
+        kod = znajdzWSlowniku(slowoZnak);
+        std::cout << "Czy w slowniku? ";
+        if (kod < 0){
+            std::cout << "NIE" <<std::endl;
+            std::cout << "Na wyjscie: [" << aktualneSlowo.kod << "]" << std::endl;
+            resultArray.push_back(aktualneSlowo.kod);
+            dodajDoSlownika(slowoZnak, false);
+            if(znajdzWSlowniku(slowoZnak) > 0){
+                slowoZnak.kod = znajdzWSlowniku(slowoZnak);
+                std::cout << "Dodajemy do slownika ";
+                wyswietlSlowo(slownik[slowoZnak.kod]);
+            }
+            aktualneSlowo = noweSlowo(znak);
+            aktualneSlowo.kod = znajdzWSlowniku(aktualneSlowo);
+            aktualneSlowo.wSlowniku = true;
+        } else {
+            std::cout << "TAK: [" << kod << "]" << std::endl;
+            aktualneSlowo = slowoZnak;
+            aktualneSlowo.kod = znajdzWSlowniku(aktualneSlowo);
+            aktualneSlowo.wSlowniku = true;
+        }
+        i++;
+    }
+    std::cout << "Koniec danych" << std::endl;
+    std::cout << "Na wyjscie: [" << aktualneSlowo.kod << "]" << std::endl;
+    resultArray.push_back(aktualneSlowo.kod);
+    std::cout << std::endl;
+    std::cout << "Aktualny slownik:" << std::endl;
+    wyswietlSlownik();
+
+    saveVector<Uint16>(resultArray, "test.jawa");
+}
+
+//maybe works
+void LZWDekompresja(int wejscie[], int dlugosc) {
+    LZWinicjalizacja();
+
+    slowo poprzednieSlowo;
+    slowo aktualneSlowo;
+
+    for (int i = 0; i < dlugosc; i++) {
+        int kod = wejscie[i];
+        std::cout << "na wyjscie: [" << kod << "] ";
+
+        if (kod < rozmiarSlownika) {
+            aktualneSlowo = slownik[kod];
+        } else if (kod == rozmiarSlownika && poprzednieSlowo.dlugosc > 0) {
+            aktualneSlowo = polaczSlowo(poprzednieSlowo, poprzednieSlowo.element[0]);
+        } else {
+            std::cout << "Blad: nieprawidlowy kod" << std::endl;
+            return;
+        }
+
+        for (int j = 0; j < aktualneSlowo.dlugosc; j++) {
+            std::cout << (int)aktualneSlowo.element[j];
+            if (j < aktualneSlowo.dlugosc - 1) std::cout << ", ";
+        }
+    
+        std::cout << std::endl;
+
+        if (poprzednieSlowo.dlugosc > 0) {
+            slowo noweSlowo = polaczSlowo(poprzednieSlowo, aktualneSlowo.element[0]);
+            std::cout << "Nowy element slownika: ";
+            wyswietlSlowo(noweSlowo);
+            dodajDoSlownika(noweSlowo, true);
+        }
+
+        poprzednieSlowo = aktualneSlowo;
+
+        std::cout << std::endl;
+    }
+
+    std::cout << "koniec danych" << std::endl;
+    std::cout << std::endl;
+    std::cout << "aktualny slownik:" << std::endl;
+    wyswietlSlownik();
+}

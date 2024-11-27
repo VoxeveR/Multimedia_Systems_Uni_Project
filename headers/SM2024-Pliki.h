@@ -30,7 +30,7 @@ void saveRGB555(std::string fileName);
 void saveRGB565(std::string fileName);
 
 template <typename T>
-void saveVector(std::vector<T> v, std::string fileName){
+void saveVector(std::vector<T> v, std::string fileName) {
     std::ofstream output(fileName, std::ios::binary);
 
     if (!output) {

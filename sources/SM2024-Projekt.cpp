@@ -208,6 +208,12 @@ int main(int argc, char* argv[]) {
                             option = true;
                         }
 
+                        if (event.key.keysym.sym == SDLK_9)
+                        {
+                            Funkcja9();
+                            option = true;
+                        }
+
 
 
                         if (event.key.keysym.sym == SDLK_r)
