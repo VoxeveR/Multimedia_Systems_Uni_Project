@@ -410,6 +410,8 @@ void LZWDekompresja(std::string filename) {
 }
 
 
+/* MARSZALEK
+
 struct token {
     Uint16 tokLength;
     Uint16 shift;
@@ -496,4 +498,119 @@ void LZ77Dekompresja(std::string filename) {
             k++;
         }
     }
+}
+*/
+
+template <typename T>
+void wypiszWektor(const std::vector<T>& wektor) {
+    for (const T& element : wektor) {
+        std::cout << element << " ";
+    }
+    //std::cout << std::endl;
+}
+
+std::pair<int, int> longest_match(const std::vector<int>& vec1, const std::vector<int>& vec2) {
+    int m = vec1.size(), n = vec2.size();
+    
+    std::vector<std::vector<int>> dp(m + 1, std::vector<int>(n + 1, 0));
+    
+    int longest_len = 0;
+    int end_pos = 0; 
+    int start_index = -1;
+    
+    for (int i = 1; i <= m; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            if (vec1[i - 1] == vec2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > longest_len) {
+                    longest_len = dp[i][j];
+                    end_pos = i;
+                    start_index = i - longest_len;
+                }
+            } else {
+                dp[i][j] = 0;
+            }
+        }
+    }
+    
+    if (longest_len == vec2.size()) {
+        return {longest_len, start_index + 1 };
+    } else {
+        return {0, 0};
+    }
+}
+
+void LZ77Kompresja(const std::vector<Uint8> input, int length, std::string filename) {
+    std::vector<int> okno;
+    std::vector<int> poszukiwane;
+    std::vector<int> wynik;  // Wektor wynikowy do przechowywania danych (dlugosc, offset, znak)
+    int pozycja = 0;
+
+    while(pozycja < length) {
+        if(pozycja == length - 1) { 
+            //std::cout << "ostatni " << std::endl;
+            int znak = (int)input[pozycja - 1];
+            wynik.push_back(0);  // Zapisujemy dlugosc
+            wynik.push_back(0);  // Zapisujemy offset
+            wynik.push_back(znak);  // Zapisujemy znak
+           // std::cout << "na wyjscie: (" << 0 << ", " << 0 << ", " << znak << ")" << std::endl; 
+            okno.insert(okno.begin(), input[pozycja - 1]);
+            break;
+        }
+/*
+        std::cout << "okno: ";
+        for(int i = 0; i < okno.size(); i++) {
+            std::cout << okno[i] << ", ";
+        }*/
+
+        poszukiwane.insert(poszukiwane.begin(), input[pozycja]);
+        int last_match, last_index;
+        int max_dopasowanie = 0;
+        int start_index = 0;
+        int offset = -1;
+
+        while (true) {
+            last_match = max_dopasowanie;
+            last_index = start_index;
+
+            //std::cout << std::endl << "poszukujemy: ";
+            //wypiszWektor(poszukiwane);
+            //std::cout << std::endl;
+
+            std::pair result = longest_match(okno, poszukiwane);
+            max_dopasowanie = result.first;
+            start_index = result.second;
+
+            if (max_dopasowanie == 0) {
+                pozycja++;
+                okno.insert(okno.begin(), poszukiwane.begin(), poszukiwane.end());
+                //std::cout << "Brak dopasowania. Dodano poszukiwane do okna." << std::endl;
+
+                if(offset == -1) offset = 0;
+                int znak = (int)input[pozycja - 1];
+                wynik.push_back(last_match);  // Zapisujemy dlugosc
+                wynik.push_back(last_index + offset);  // Zapisujemy offset
+                wynik.push_back(znak);  // Zapisujemy znak
+                //std::cout << "na wyjscie: (" << last_match << ", " << last_index + offset << ", " << znak << ")" << std::endl; 
+                break;
+            } else {
+               // std::cout << "Znaleziono dopasowanie o dlugosci " << max_dopasowanie
+               //           << " na pozycji " << start_index << std::endl;
+
+                pozycja++;
+                poszukiwane.insert(poszukiwane.begin(), input[pozycja]);
+                offset++;
+            }
+        }
+        poszukiwane.clear();
+    }
+
+    //wypiszWektor(okno);
+    std::cout << "koniec danych\n";
+    saveVector(wynik, filename);
+    // Opcjonalnie: wypisz wynikowy wektor
+  /*  std::cout << "Wynik: \n";
+    for (size_t i = 0; i < wynik.size(); i += 3) {
+        std::cout << "(" << wynik[i] << ", " << wynik[i+1] << ", " << wynik[i+2] << ")" << std::endl;
+    }*/
 }

@@ -116,7 +116,7 @@ void Funkcja2() {
     // RLEDekompresja("test.jawa");
 
     LZ77Kompresja(array, array.size(), "test.jawa");
-    LZ77Dekompresja("test.jawa");
+  //  LZ77Dekompresja("test.jawa");
     
 
     // saveBW("test.jawa", dane, sizeof(dane));
