@@ -296,10 +296,10 @@ void LZWinicjalizacja(){
     for(int s = 0; s < 4; s++){
         noweSlowo.dlugosc = 1;
         noweSlowo.element[0] = s;
-        noweSlowo.kod = dodajDoSlownika(noweSlowo);
+        noweSlowo.kod = dodajDoSlownika(noweSlowo, false);
     }
 }
-void LZWKompresja(int wejscie[], int dlugosc){
+void LZWKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string filename){
     LZWinicjalizacja();
     slowo aktualneSlowo = noweSlowo();
     slowo slowoZnak;
@@ -311,47 +311,52 @@ void LZWKompresja(int wejscie[], int dlugosc){
 
     while (i < dlugosc){
         znak = wejscie[i];
-        std::cout << "Pobieramy znak" << (int)znak << " z pozycji " << i << std::endl;
+        // std::cout << "Pobieramy znak" << (int)znak << " z pozycji " << i << std::endl;
         slowoZnak = polaczSlowo(aktualneSlowo, znak);
-        std::cout << "Aktualne slowo: ";
-        wyswietlSlowo(aktualneSlowo);
-        std::cout << "Slowo + znak: ";
-        wyswietlSlowo(slowoZnak);
+        // std::cout << "Aktualne slowo: ";
+        // wyswietlSlowo(aktualneSlowo);
+        // std::cout << "Slowo + znak: ";
+        // wyswietlSlowo(slowoZnak);
         kod = znajdzWSlowniku(slowoZnak);
-        std::cout << "Czy w slowniku? ";
+        // std::cout << "Czy w slowniku? ";
         if (kod < 0){
-            std::cout << "NIE" <<std::endl;
-            std::cout << "Na wyjscie: [" << aktualneSlowo.kod << "]" << std::endl;
+            // std::cout << "NIE" <<std::endl;
+            // std::cout << "Na wyjscie: [" << aktualneSlowo.kod << "]" << std::endl;
             resultArray.push_back(aktualneSlowo.kod);
             dodajDoSlownika(slowoZnak, false);
             if(znajdzWSlowniku(slowoZnak) > 0){
                 slowoZnak.kod = znajdzWSlowniku(slowoZnak);
-                std::cout << "Dodajemy do slownika ";
-                wyswietlSlowo(slownik[slowoZnak.kod]);
+                // std::cout << "Dodajemy do slownika ";
+                // wyswietlSlowo(slownik[slowoZnak.kod]);
             }
             aktualneSlowo = noweSlowo(znak);
             aktualneSlowo.kod = znajdzWSlowniku(aktualneSlowo);
             aktualneSlowo.wSlowniku = true;
         } else {
-            std::cout << "TAK: [" << kod << "]" << std::endl;
+            // std::cout << "TAK: [" << kod << "]" << std::endl;
             aktualneSlowo = slowoZnak;
             aktualneSlowo.kod = znajdzWSlowniku(aktualneSlowo);
             aktualneSlowo.wSlowniku = true;
         }
         i++;
     }
-    std::cout << "Koniec danych" << std::endl;
-    std::cout << "Na wyjscie: [" << aktualneSlowo.kod << "]" << std::endl;
+    // std::cout << "Koniec danych" << std::endl;
+    // std::cout << "Na wyjscie: [" << aktualneSlowo.kod << "]" << std::endl;
     resultArray.push_back(aktualneSlowo.kod);
-    std::cout << std::endl;
-    std::cout << "Aktualny slownik:" << std::endl;
-    wyswietlSlownik();
+    // std::cout << std::endl;
+    // std::cout << "Aktualny slownik:" << std::endl;
+    // wyswietlSlownik();
 
-    saveVector<Uint16>(resultArray, "test.jawa");
+    saveVector<Uint16>(resultArray, filename);
 }
 
 //maybe works
-void LZWDekompresja(int wejscie[], int dlugosc) {
+void LZWDekompresja(std::string filename) {
+    std::vector<Uint16> wejscie = readVector<Uint16>(filename);
+    int dlugosc = wejscie.size();
+    std::vector<Uint8> output;
+
+
     LZWinicjalizacja();
 
     slowo poprzednieSlowo;
@@ -359,38 +364,47 @@ void LZWDekompresja(int wejscie[], int dlugosc) {
 
     for (int i = 0; i < dlugosc; i++) {
         int kod = wejscie[i];
-        std::cout << "na wyjscie: [" << kod << "] ";
+        // std::cout << "na wyjscie: [" << kod << "] ";
 
         if (kod < rozmiarSlownika) {
             aktualneSlowo = slownik[kod];
         } else if (kod == rozmiarSlownika && poprzednieSlowo.dlugosc > 0) {
             aktualneSlowo = polaczSlowo(poprzednieSlowo, poprzednieSlowo.element[0]);
         } else {
-            std::cout << "Blad: nieprawidlowy kod" << std::endl;
+            // std::cout << "Blad: nieprawidlowy kod" << std::endl;
             return;
         }
 
         for (int j = 0; j < aktualneSlowo.dlugosc; j++) {
-            std::cout << (int)aktualneSlowo.element[j];
-            if (j < aktualneSlowo.dlugosc - 1) std::cout << ", ";
+            output.push_back(aktualneSlowo.element[j]);
+            // std::cout << (int)aktualneSlowo.element[j];
+            // if (j < aktualneSlowo.dlugosc - 1) std::cout << ", ";
         }
     
-        std::cout << std::endl;
-
+        // std::cout << std::endl;
+// 
         if (poprzednieSlowo.dlugosc > 0) {
             slowo noweSlowo = polaczSlowo(poprzednieSlowo, aktualneSlowo.element[0]);
-            std::cout << "Nowy element slownika: ";
-            wyswietlSlowo(noweSlowo);
-            dodajDoSlownika(noweSlowo, true);
+            // std::cout << "Nowy element slownika: ";
+            // wyswietlSlowo(noweSlowo);
+            dodajDoSlownika(noweSlowo, false);
         }
 
         poprzednieSlowo = aktualneSlowo;
 
-        std::cout << std::endl;
+        // std::cout << std::endl;
     }
 
-    std::cout << "koniec danych" << std::endl;
-    std::cout << std::endl;
-    std::cout << "aktualny slownik:" << std::endl;
-    wyswietlSlownik();
+    // std::cout << "koniec danych" << std::endl;
+    // std::cout << std::endl;
+    // std::cout << "aktualny slownik:" << std::endl;
+    // wyswietlSlownik();
+
+    int k = 0;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            setPixel(x, y, output[k], output[k], output[k]);
+            k++;
+        }
+    }
 }

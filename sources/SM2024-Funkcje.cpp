@@ -111,11 +111,12 @@ void Funkcja2() {
 
     std::vector<Uint8> array = zczytajDaneBW();
     std::cout << "Zrobiono konwersję na BW\n";
-    RLEKompresja(array, array.size(), "test.jawa");
+    // RLEKompresja(array, array.size(), "test.jawa");
 
-    RLEDekompresja("test.jawa");
+    // RLEDekompresja("test.jawa");
 
-
+    LZWKompresja(array, array.size(), "test.jawa");
+    LZWDekompresja("test.jawa");
     
 
     // saveBW("test.jawa", dane, sizeof(dane));
@@ -293,16 +294,16 @@ void Funkcja8() {
 
 void Funkcja9() {
 
-    int nieskompresowane[] = {0, 0, 0, 1, 1, 1, 1, 2, 0, 0, 3, 1, 3,
-    2, 2, 0, 0, 0, 3, 3, 3, 3, 1, 2, 1, 2, 3, 1, 2, 0, 0, 1, 1, 1, 3, 3};
-    int dlugosc = 36;
-    std::cout << "wejscie:" << std::endl;
-    for(int c = 0; c < dlugosc; c++){
-        std::cout << (int)nieskompresowane[c] << ", ";
-    }
-    std::cout << std::endl;
-    LZWKompresja(nieskompresowane, dlugosc);
-    std::cout << std::endl;
+    // int nieskompresowane[] = {0, 0, 0, 1, 1, 1, 1, 2, 0, 0, 3, 1, 3,
+    // 2, 2, 0, 0, 0, 3, 3, 3, 3, 1, 2, 1, 2, 3, 1, 2, 0, 0, 1, 1, 1, 3, 3};
+    // int dlugosc = 36;
+    // std::cout << "wejscie:" << std::endl;
+    // for(int c = 0; c < dlugosc; c++){
+    //     std::cout << (int)nieskompresowane[c] << ", ";
+    // }
+    // std::cout << std::endl;
+    // LZWKompresja(nieskompresowane, dlugosc);
+    // std::cout << std::endl;
 
     SDL_UpdateWindowSurface(window);
 }

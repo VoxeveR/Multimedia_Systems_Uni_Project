@@ -20,10 +20,8 @@ void wyswietlSlowo(slowo aktualneSlowo);
 void wyswietlSlownik();
 int dodajDoSlownika(slowo nowy, bool czyWyswietlac);
 void LZWinicjalizacja();
-void LZWKompresja(int wejscie[], int dlugosc);
-void LZWDekompresja(int wejscie[], int dlugosc);
-
-
+void LZWKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string filename);
+void LZWDekompresja(std::string filename);
 
 void ByteRunKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileName);
 void ByteRunDekompresja(std::string fileName);
