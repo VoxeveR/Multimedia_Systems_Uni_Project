@@ -112,11 +112,11 @@ void Funkcja2() {
     std::vector<Uint8> array = zczytajDaneBW();
     std::cout << "Zrobiono konwersję na BW\n";
     // RLEKompresja(array, array.size(), "test.jawa");
-
+    saveVector<Uint8>(array, "test2.jawa");
     // RLEDekompresja("test.jawa");
 
-    LZWKompresja(array, array.size(), "test.jawa");
-    LZWDekompresja("test.jawa");
+    LZ77Kompresja(array, array.size(), "test.jawa");
+    LZ77Dekompresja("test.jawa");
     
 
     // saveBW("test.jawa", dane, sizeof(dane));

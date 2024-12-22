@@ -408,3 +408,92 @@ void LZWDekompresja(std::string filename) {
         }
     }
 }
+
+
+struct token {
+    Uint16 tokLength;
+    Uint16 shift;
+    Uint8 rawValue;
+    token() : tokLength(0), shift(0), rawValue(0) {}
+    token(Uint16 tokLength, Uint16 shift, Uint8 rawValue): shift(shift), tokLength(tokLength), rawValue(rawValue) {};
+};
+
+// Funkcja LZ77 - kompresuje wejściowy wektor danych
+void LZ77Kompresja(const std::vector<Uint8> input, int length, std::string filename) {
+    const int windowSize = 64000; // Rozmiar okna wyszukiwania
+    const int lookaheadBufferSize = 32000; // Rozmiar bufora podglądu
+    std::vector<token> resultArr;
+    int position = 0;
+
+    while (position < length) {
+        int matchDistance = 0;
+        int matchLength = 0;
+        int searchStart;
+        int searchEnd = position;
+
+        // Ustalenie granic okna wyszukiwania
+        if(position < windowSize) {
+            searchStart = 0;
+        } else {
+            searchStart = position - windowSize;
+        }
+
+        // Wyszukiwanie najdłuższego dopasowania w oknie wyszukiwania
+        for (int i = searchStart; i < searchEnd; i++) {
+            int currentMatchLength = 0;
+            while (currentMatchLength < lookaheadBufferSize &&
+                   position + currentMatchLength < length &&
+                   input[i + currentMatchLength] == input[position + currentMatchLength]) {
+                currentMatchLength++;
+            }
+
+            if (currentMatchLength > matchLength) {
+                matchLength = currentMatchLength;
+                matchDistance = position - i;
+            }
+        }
+
+        // Jeśli nie znaleziono dopasowania, zapisujemy literę bezpośrednio
+        if (matchLength < 3) {
+            resultArr.push_back(token((Uint16)0, (Uint16)0, (Uint8)input[position]));
+            position++;
+        }
+            // W przeciwnym razie zapisujemy parę (odległość, długość, następny znak)
+        else {
+            Uint8 nextChar = (position + matchLength < length) ? input[position + matchLength] : 0;
+            resultArr.push_back(token((Uint16)matchLength, (Uint16)matchDistance, (Uint8)nextChar));
+            position += matchLength + 1;
+        }
+    }
+    saveVector<token>(resultArr, filename);
+}
+
+// Funkcja LZ77 - dekompresuje wejściowy wektor danych
+void LZ77Dekompresja(std::string filename) {
+    std::vector<token> tokens = readVector<token>(filename);
+    std::vector<Uint8> output;
+    int j = 0;
+    for (token tok : tokens) {
+        // Jeśli tokLength to 0, oznacza to, że zapisujemy surową wartość rawValue
+        if (tok.tokLength == 0) {
+            output.push_back(tok.rawValue);
+        } else {
+            // Zapisujemy odwołanie do wcześniejszych danych w strumieniu
+            int startPos = output.size() - tok.shift;
+            for (int i = 0; i < tok.tokLength; ++i) {
+                output.push_back(output[startPos + i]);
+            }
+
+            // Zapisujemy dodatkowy znak rawValue
+            output.push_back(tok.rawValue);
+        }
+    }
+
+    int k = 0;
+    for(int x = 0; x < szerokosc/2; x++){
+        for(int y = 0; y < wysokosc; y++){
+            setPixel(x, y, output[k], output[k], output[k]);
+            k++;
+        }
+    }
+}
