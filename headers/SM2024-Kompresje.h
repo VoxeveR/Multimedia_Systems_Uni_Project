@@ -30,7 +30,7 @@ void RLEKompresja(std::vector<Uint8> wejscie, int dlugosc, std::string fileName)
 void RLEDekompresja(std::string fileName);
 
 
-void LZ77Kompresja(const std::vector<Uint8> input, int length, std::string filename);
+void LZ77Kompresja(std::vector<Uint8> input, int length, std::string filename);
 void LZ77Dekompresja(std::string filename);
 
 

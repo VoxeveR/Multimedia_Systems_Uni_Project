@@ -115,8 +115,16 @@ void Funkcja2() {
     saveVector<Uint8>(array, "test2.jawa");
     // RLEDekompresja("test.jawa");
 
-    LZ77Kompresja(array, array.size(), "test.jawa");
-  //  LZ77Dekompresja("test.jawa");
+    //
+
+    for(int x = 0; x < szerokosc; x++){
+        for(int y = 0; y < wysokosc; y++){
+            setPixel(x, y, 0, 0, 0);
+        }
+    }
+    LZ77Kompresja(array, array.size(), "test.jawa");    
+    SDL_UpdateWindowSurface(window);
+   // LZ77Dekompresja("test.jawa", szerokosc/2, wysokosc);
     
 
     // saveBW("test.jawa", dane, sizeof(dane));
@@ -131,7 +139,6 @@ void Funkcja2() {
     if(dithering == 1) ditheringFloydBW();
     if(dithering == 2) ditheringBayerBW();*/
 
-    SDL_UpdateWindowSurface(window);
    // zczytajDane8x8(szerokosc/2, 0);
 }
 

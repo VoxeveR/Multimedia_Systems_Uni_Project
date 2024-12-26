@@ -410,8 +410,8 @@ void LZWDekompresja(std::string filename) {
 }
 
 
-/* MARSZALEK
-
+// MARSZALEK
+/*
 struct token {
     Uint16 tokLength;
     Uint16 shift;
@@ -420,8 +420,8 @@ struct token {
     token(Uint16 tokLength, Uint16 shift, Uint8 rawValue): shift(shift), tokLength(tokLength), rawValue(rawValue) {};
 };
 
-// Funkcja LZ77 - kompresuje wejściowy wektor danych
-void LZ77Kompresja(const std::vector<Uint8> input, int length, std::string filename) {
+// Funkcja kompresji LZ77
+void LZ77Kompresja(std::vector<Uint8> input, int length, std::string filename) {
     const int windowSize = 64000; // Rozmiar okna wyszukiwania
     const int lookaheadBufferSize = 32000; // Rozmiar bufora podglądu
     std::vector<token> resultArr;
@@ -430,22 +430,16 @@ void LZ77Kompresja(const std::vector<Uint8> input, int length, std::string filen
     while (position < length) {
         int matchDistance = 0;
         int matchLength = 0;
-        int searchStart;
-        int searchEnd = position;
 
-        // Ustalenie granic okna wyszukiwania
-        if(position < windowSize) {
-            searchStart = 0;
-        } else {
-            searchStart = position - windowSize;
-        }
+        int searchStart = std::max(0, position - windowSize);
+        int searchEnd = std::min(position + lookaheadBufferSize, length);
 
         // Wyszukiwanie najdłuższego dopasowania w oknie wyszukiwania
-        for (int i = searchStart; i < searchEnd; i++) {
+        for (int i = searchStart; i < position; i++) {
             int currentMatchLength = 0;
-            while (currentMatchLength < lookaheadBufferSize &&
-                   position + currentMatchLength < length &&
-                   input[i + currentMatchLength] == input[position + currentMatchLength]) {
+            while (position + currentMatchLength < length &&
+                   input[i + currentMatchLength] == input[position + currentMatchLength] &&
+                   currentMatchLength < lookaheadBufferSize) {
                 currentMatchLength++;
             }
 
@@ -455,51 +449,51 @@ void LZ77Kompresja(const std::vector<Uint8> input, int length, std::string filen
             }
         }
 
-        // Jeśli nie znaleziono dopasowania, zapisujemy literę bezpośrednio
         if (matchLength < 3) {
-            resultArr.push_back(token((Uint16)0, (Uint16)0, (Uint8)input[position]));
+            resultArr.push_back(token(0, 0, input[position]));
             position++;
-        }
-            // W przeciwnym razie zapisujemy parę (odległość, długość, następny znak)
-        else {
+        } else {
             Uint8 nextChar = (position + matchLength < length) ? input[position + matchLength] : 0;
-            resultArr.push_back(token((Uint16)matchLength, (Uint16)matchDistance, (Uint8)nextChar));
+            resultArr.push_back(token(matchLength, matchDistance, nextChar));
             position += matchLength + 1;
         }
     }
-    saveVector<token>(resultArr, filename);
+    saveVector(resultArr, filename);
 }
 
-// Funkcja LZ77 - dekompresuje wejściowy wektor danych
-void LZ77Dekompresja(std::string filename) {
+// Funkcja dekompresji LZ77
+void LZ77Dekompresja(std::string filename, int szerokosc, int wysokosc) {
     std::vector<token> tokens = readVector<token>(filename);
     std::vector<Uint8> output;
-    int j = 0;
-    for (token tok : tokens) {
-        // Jeśli tokLength to 0, oznacza to, że zapisujemy surową wartość rawValue
+
+    for (const token& tok : tokens) {
         if (tok.tokLength == 0) {
             output.push_back(tok.rawValue);
         } else {
-            // Zapisujemy odwołanie do wcześniejszych danych w strumieniu
             int startPos = output.size() - tok.shift;
             for (int i = 0; i < tok.tokLength; ++i) {
-                output.push_back(output[startPos + i]);
+                output.push_back(output[startPos + i % tok.shift]);
             }
-
-            // Zapisujemy dodatkowy znak rawValue
             output.push_back(tok.rawValue);
         }
     }
 
     int k = 0;
-    for(int x = 0; x < szerokosc/2; x++){
-        for(int y = 0; y < wysokosc; y++){
-            setPixel(x, y, output[k], output[k], output[k]);
-            k++;
+    for (int y = 0; y < wysokosc; y++) {
+        for (int x = 0; x < szerokosc; x++) {
+            if (k < output.size()) {
+                setPixel(x, y, output[k], output[k], output[k]);
+                k++;
+            }
         }
+        SDL_UpdateWindowSurface(window);
     }
 }
+
 */
+
+// ZIETKE DOWN
+
 
 template <typename T>
 void wypiszWektor(const std::vector<T>& wektor) {
@@ -540,77 +534,70 @@ std::pair<int, int> longest_match(const std::vector<int>& vec1, const std::vecto
     }
 }
 
-void LZ77Kompresja(const std::vector<Uint8> input, int length, std::string filename) {
+void LZ77Kompresja(std::vector<Uint8> input, int length, std::string filename) {
+    const int windowSize = 8192;  // Ograniczenie rozmiaru okna
     std::vector<int> okno;
+    int jxd = 0;
     std::vector<int> poszukiwane;
-    std::vector<int> wynik;  // Wektor wynikowy do przechowywania danych (dlugosc, offset, znak)
+    std::vector<int> wynik;  // Wektor wynikowy (dlugosc, offset, znak)
     int pozycja = 0;
 
-    while(pozycja < length) {
-        if(pozycja == length - 1) { 
-            //std::cout << "ostatni " << std::endl;
-            int znak = (int)input[pozycja - 1];
-            wynik.push_back(0);  // Zapisujemy dlugosc
-            wynik.push_back(0);  // Zapisujemy offset
-            wynik.push_back(znak);  // Zapisujemy znak
-           // std::cout << "na wyjscie: (" << 0 << ", " << 0 << ", " << znak << ")" << std::endl; 
-            okno.insert(okno.begin(), input[pozycja - 1]);
+    // std::cout << "ROZMIAR Vectora " << length << std::endl;
+    
+    while (pozycja < length) {
+        if (pozycja == length - 1) { 
+            // std::cout << "ostatni " << std::endl;
+            int znak = (int)input[pozycja];
+            wynik.push_back(0);  // Dlugosc
+            wynik.push_back(0);  // Offset
+            wynik.push_back(znak);  // Znak
+            // std::cout << "na wyjscie: " << jxd << " (0, 0, " << znak << ")" << std::endl; 
+            jxd++;
+            okno.insert(okno.begin(), input[pozycja]);
             break;
         }
-/*
-        std::cout << "okno: ";
-        for(int i = 0; i < okno.size(); i++) {
-            std::cout << okno[i] << ", ";
-        }*/
 
         poszukiwane.insert(poszukiwane.begin(), input[pozycja]);
-        int last_match, last_index;
-        int max_dopasowanie = 0;
-        int start_index = 0;
-        int offset = -1;
+        int last_match = 0, last_index = 0;
+        int max_dopasowanie = 0, start_index = 0;
+        int offset = 0;
 
         while (true) {
-            last_match = max_dopasowanie;
-            last_index = start_index;
+            if (pozycja >= length) break;
 
-            //std::cout << std::endl << "poszukujemy: ";
-            //wypiszWektor(poszukiwane);
-            //std::cout << std::endl;
-
-            std::pair result = longest_match(okno, poszukiwane);
+            auto result = longest_match(okno, poszukiwane);
             max_dopasowanie = result.first;
             start_index = result.second;
 
             if (max_dopasowanie == 0) {
                 pozycja++;
                 okno.insert(okno.begin(), poszukiwane.begin(), poszukiwane.end());
-                //std::cout << "Brak dopasowania. Dodano poszukiwane do okna." << std::endl;
 
-                if(offset == -1) offset = 0;
                 int znak = (int)input[pozycja - 1];
-                wynik.push_back(last_match);  // Zapisujemy dlugosc
-                wynik.push_back(last_index + offset);  // Zapisujemy offset
-                wynik.push_back(znak);  // Zapisujemy znak
-                //std::cout << "na wyjscie: (" << last_match << ", " << last_index + offset << ", " << znak << ")" << std::endl; 
+                wynik.push_back(last_match);  // Dlugosc
+                wynik.push_back(last_index + offset);  // Offset
+                wynik.push_back(znak);  // Znak
+
+                // std::cout << "na wyjscie: " << jxd << " (" << last_match << ", " << last_index + offset << ", " << znak << ")" << std::endl;
+                jxd++;
                 break;
             } else {
-               // std::cout << "Znaleziono dopasowanie o dlugosci " << max_dopasowanie
-               //           << " na pozycji " << start_index << std::endl;
-
                 pozycja++;
+                if (pozycja >= length) break;
                 poszukiwane.insert(poszukiwane.begin(), input[pozycja]);
                 offset++;
             }
         }
+        
+        // Ograniczenie rozmiaru okna
+        if (okno.size() > windowSize) {
+            okno.resize(windowSize);
+        }
+
         poszukiwane.clear();
     }
 
-    //wypiszWektor(okno);
+    // wypiszWektor(okno);
     std::cout << "koniec danych\n";
     saveVector(wynik, filename);
-    // Opcjonalnie: wypisz wynikowy wektor
-  /*  std::cout << "Wynik: \n";
-    for (size_t i = 0; i < wynik.size(); i += 3) {
-        std::cout << "(" << wynik[i] << ", " << wynik[i+1] << ", " << wynik[i+2] << ")" << std::endl;
-    }*/
 }
