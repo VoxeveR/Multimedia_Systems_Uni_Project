@@ -122,9 +122,10 @@ void Funkcja2() {
             setPixel(x, y, 0, 0, 0);
         }
     }
-    LZ77Kompresja(array, array.size(), "test.jawa");    
+
+    LZWKompresja(array, array.size(), "test.jawa");    
     SDL_UpdateWindowSurface(window);
-   // LZ77Dekompresja("test.jawa", szerokosc/2, wysokosc);
+    LZWDekompresja("test.jawa");
     
 
     // saveBW("test.jawa", dane, sizeof(dane));

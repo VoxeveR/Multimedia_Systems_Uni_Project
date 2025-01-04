@@ -409,9 +409,6 @@ void LZWDekompresja(std::string filename) {
     }
 }
 
-
-// MARSZALEK
-/*
 struct token {
     Uint16 tokLength;
     Uint16 shift;
@@ -449,7 +446,7 @@ void LZ77Kompresja(std::vector<Uint8> input, int length, std::string filename) {
             }
         }
 
-        if (matchLength < 3) {
+        if (matchLength < 1) {
             resultArr.push_back(token(0, 0, input[position]));
             position++;
         } else {
@@ -462,7 +459,7 @@ void LZ77Kompresja(std::vector<Uint8> input, int length, std::string filename) {
 }
 
 // Funkcja dekompresji LZ77
-void LZ77Dekompresja(std::string filename, int szerokosc, int wysokosc) {
+void LZ77Dekompresja(std::string filename) {
     std::vector<token> tokens = readVector<token>(filename);
     std::vector<Uint8> output;
 
@@ -480,7 +477,7 @@ void LZ77Dekompresja(std::string filename, int szerokosc, int wysokosc) {
 
     int k = 0;
     for (int y = 0; y < wysokosc; y++) {
-        for (int x = 0; x < szerokosc; x++) {
+        for (int x = 0; x < szerokosc/2; x++) {
             if (k < output.size()) {
                 setPixel(x, y, output[k], output[k], output[k]);
                 k++;
@@ -490,9 +487,9 @@ void LZ77Dekompresja(std::string filename, int szerokosc, int wysokosc) {
     }
 }
 
-*/
 
-// ZIETKE DOWN
+/*
+// ZIETEK PONIZEJ
 
 
 template <typename T>
@@ -601,3 +598,4 @@ void LZ77Kompresja(std::vector<Uint8> input, int length, std::string filename) {
     std::cout << "koniec danych\n";
     saveVector(wynik, filename);
 }
+*/
