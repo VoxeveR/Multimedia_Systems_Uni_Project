@@ -78,15 +78,17 @@ void Funkcja1() {
     // zczytajDane8x8(szerokosc/2, 0);
 }
 
-void zczytajDaneBW(Uint8* dataArr){
-    int k = 0;
+
+std::vector<Uint8> zczytajDaneBW(){
+    std::vector<Uint8> output;
     for(int y = 0; y < wysokosc; y++){
         for(int x = 0; x < szerokosc/2; x++){
             SDL_Color color = getPixel(x, y);
-            dataArr[k] = z24RGBna8BW(color);
-            k++;
+            output.push_back(z24RGBna8BW(color));
         }
     }
+
+    return output;
 }
 
 //szarosc narzucona
@@ -94,21 +96,39 @@ void Funkcja2() {
 
     RightToLeft();
 
-    Uint8 dane[320*200];
+    // Uint8 dane[320*200];
 
-    zczytajDaneBW(dane);
+    // zczytajDaneBW(dane);
 
-    int k = 0;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            setPixel(x + szerokosc/2, y, dane[k], dane[k], dane[k]);
-            k++;
+    // int k = 0;
+    // for(int y = 0; y < wysokosc; y++){
+    //     for(int x = 0; x < szerokosc/2; x++){
+    //         setPixel(x + szerokosc/2, y, dane[k], dane[k], dane[k]);
+    //         k++;
+    //     }
+    // }
+
+
+    std::vector<Uint8> array = zczytajDaneBW();
+    std::cout << "Zrobiono konwersję na BW\n";
+    // RLEKompresja(array, array.size(), "test.jawa");
+    saveVector<Uint8>(array, "test2.jawa");
+    // RLEDekompresja("test.jawa");
+
+    //
+
+    for(int x = 0; x < szerokosc; x++){
+        for(int y = 0; y < wysokosc; y++){
+            setPixel(x, y, 0, 0, 0);
         }
     }
 
-    ByteRunKompresja(dane, sizeof(dane));
+    LZWKompresja(array, array.size(), "test.jawa");    
+    SDL_UpdateWindowSurface(window);
+    LZWDekompresja("test.jawa");
+    
 
-    saveBW("test.jawa", dane, sizeof(dane));
+    // saveBW("test.jawa", dane, sizeof(dane));
 
    /* identyfikator[0] = 'P';
     identyfikator[1] = 'J';
@@ -120,7 +140,6 @@ void Funkcja2() {
     if(dithering == 1) ditheringFloydBW();
     if(dithering == 2) ditheringBayerBW();*/
 
-    SDL_UpdateWindowSurface(window);
    // zczytajDane8x8(szerokosc/2, 0);
 }
 
@@ -283,7 +302,16 @@ void Funkcja8() {
 
 void Funkcja9() {
 
-    //...
+    // int nieskompresowane[] = {0, 0, 0, 1, 1, 1, 1, 2, 0, 0, 3, 1, 3,
+    // 2, 2, 0, 0, 0, 3, 3, 3, 3, 1, 2, 1, 2, 3, 1, 2, 0, 0, 1, 1, 1, 3, 3};
+    // int dlugosc = 36;
+    // std::cout << "wejscie:" << std::endl;
+    // for(int c = 0; c < dlugosc; c++){
+    //     std::cout << (int)nieskompresowane[c] << ", ";
+    // }
+    // std::cout << std::endl;
+    // LZWKompresja(nieskompresowane, dlugosc);
+    // std::cout << std::endl;
 
     SDL_UpdateWindowSurface(window);
 }
