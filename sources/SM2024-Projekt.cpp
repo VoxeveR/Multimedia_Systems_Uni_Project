@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
     while(true){
         if(!window){
             cout << "Zaladuj plik bmp" << endl;
-            cout << "Zaladuj plik .23" << endl;
+            cout << "Zaladuj plik .jawa" << endl;
             cout << "Wyjdz z programu" << endl;
 
             int menu[] = {2, 2, 2};
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
                 color(menu[0]);
                 cout << "Zaladuj plik bmp" << endl;
                 color(menu[1]);
-                cout << "Zaladuj plik .23" << endl;
+                cout << "Zaladuj plik .jawa" << endl;
                 color(menu[2]);
                 cout << "Wyjdz z programu" << endl;
 
@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
                         system("cls");
 
                     }else if (counter1 == 2) {
-                        cout << "Wybrano opcje: Zaladuj plik .23" << endl;
+                        cout << "Wybrano opcje: Zaladuj plik .jawa" << endl;
                         system("cls");
 
                         cout << "Podaj nazwe pliku: ";
@@ -122,7 +122,7 @@ int main(int argc, char* argv[]) {
             cout << "============================" << endl;
 
             cout << "=== OPCJE PALETY ===" << endl;
-            cout << "1. Zmiana na skale szarości" << endl;
+            cout << "1. Zmiana na skale szarosci" << endl;
             cout << "2. Zamiana na 16-bitowy RGB565" << endl;
             cout << "3. Zamiana na 24-bitowy RGB888" << endl;
             cout << "4. Zamiana na 24-bitowy YIQ888" << endl;
@@ -131,8 +131,9 @@ int main(int argc, char* argv[]) {
             cout << "7. Kompresja stratna (transformata DCT)" << endl;
             cout << "============================" << endl;
 
-            cout << "=== SUGEROWANY SPOSÓB UŻYCIA ===" << endl;
-            cout << "" << endl;
+            cout << "=== SUGEROWANY SPOOB UZYCIA ===" << endl;
+            cout << "https://github.com/VoxeveR/Multimedia_Systems_Uni_Project/blob/newmenu/sugerowany.jpeg" << endl;
+            cout << "===========================" << endl;
 
             cout << "=== USTAWIENIA DITHERINGU ===" << endl;
             cout << "6. Przelacz Dithering" << endl;
@@ -240,7 +241,7 @@ int main(int argc, char* argv[]) {
                             gotoxy(0,1);
 
                             cout << "BMP" << endl;
-                            cout << "z23" << endl;
+                            cout << "jawa" << endl;
 
                             int Set2[] = {2, 2};
                             int counter2 = 1;
@@ -273,7 +274,7 @@ int main(int argc, char* argv[]) {
                                 color(Set2[0]);
                                 cout << "BMP" << endl;
                                 color(Set2[1]);
-                                cout << "z23" << endl;
+                                cout << "jawa" << endl;
 
                                 if (key2 == 13) {
                                     color(15);
