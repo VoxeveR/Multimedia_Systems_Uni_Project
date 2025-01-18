@@ -122,12 +122,17 @@ int main(int argc, char* argv[]) {
             cout << "============================" << endl;
 
             cout << "=== OPCJE PALETY ===" << endl;
-            cout << "1. Paleta narzucona" << endl;
-            cout << "2. Skala szarosci (narzucona)" << endl;
-            cout << "3. Skala szarosci (dedykowana)" << endl;
-            cout << "4. Paleta wykryta" << endl;
-            cout << "5. Paleta dedykowana" << endl;
+            cout << "1. Zmiana na skale szarości" << endl;
+            cout << "2. Zamiana na 16-bitowy RGB565" << endl;
+            cout << "3. Zamiana na 24-bitowy RGB888" << endl;
+            cout << "4. Zamiana na 24-bitowy YIQ888" << endl;
+            cout << "5. Algorytm Predykcji typ 2" << endl;
+            cout << "6. Kompresja bezstratna LZ77" << endl;
+            cout << "7. Kompresja stratna (transformata DCT)" << endl;
             cout << "============================" << endl;
+
+            cout << "=== SUGEROWANY SPOSÓB UŻYCIA ===" << endl;
+            cout << "" << endl;
 
             cout << "=== USTAWIENIA DITHERINGU ===" << endl;
             cout << "6. Przelacz Dithering" << endl;
