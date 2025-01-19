@@ -3,6 +3,7 @@
 #define SM2024_ZMIENNE_H_INCLUDED
 
 #include <SDL2/SDL.h>
+#include <vector>
 
 extern int szerokosc;
 extern int wysokosc;
@@ -25,6 +26,11 @@ extern int ileKolorow;
 
 extern int tryb;
 extern int dithering;
+extern int blackandwhite;
+extern int yiqstatus;
+extern int bit;
+extern int prediction;
+extern int compression;
 extern int wysokoscObrazka;
 extern int szerokoscObrazka;
 extern char identyfikator[];
@@ -34,10 +40,17 @@ extern char identyfikator[];
 //FIXME: WYSOKOSC JEST ZLE - POPRAW TO PO ZAJECIACH
 struct dane888
 {
-    Uint8 comp1[320*200];
-    Uint8 comp2[320*200];
-    Uint8 comp3[320*200];
+    std::vector<Uint8> comp1;
+    std::vector<Uint8> comp2;
+    std::vector<Uint8> comp3;
 };
+
+struct daneBW{ 
+    std::vector<Uint8> comp;
+};
+
+extern dane888 dane24;
+extern daneBW dane8;
 
 enum FilterType {
     NO_FILTER,

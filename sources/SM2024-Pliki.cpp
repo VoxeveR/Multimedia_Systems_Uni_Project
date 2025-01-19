@@ -15,20 +15,25 @@ using namespace std;
 
 Uint16 data555[320*200];
 
-void zczytajDane(dane888* dataArr){
-    int k = 0;
+void zczytajDane(){
     for(int y = 0; y < wysokosc; y++){
         for(int x = 0; x < szerokosc/2; x++){
             SDL_Color color = getPixel(x, y);
-            dataArr->comp1[k] = color.r;
-            dataArr->comp2[k] = color.g;
-            dataArr->comp3[k] = color.b;
-            k++;
+            dane24.comp1.push_back(color.r);
+            dane24.comp2.push_back(color.g);
+            dane24.comp3.push_back(color.b);
         }
     }
 }
 
-
+void zczytajDaneBW(){
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            SDL_Color color = getPixel(x, y);
+            dane8.comp.push_back(color.r);
+        }
+    }
+}
 
 void zczytajDane8x8(int xStart, int yStart){
     int k = 0;
@@ -44,6 +49,17 @@ void zczytajDane8x8(int xStart, int yStart){
             }
         }
     }
+}
+
+void clearVector24(){
+    dane24.comp1.clear();
+    dane24.comp2.clear();
+    dane24.comp3.clear();
+
+}
+
+void clearVector8(){
+    dane8.comp.clear();
 }
 
 void clearArray(){
@@ -248,58 +264,83 @@ void pack8Colors(Uint8* input, Uint8* output) {
 
 }
 
-void save(std::string nazwa){
-    std::cout << "Zapisujemy plik 'obraz.z23' metoda write()";
-    ofstream wyjscie(nazwa, ios::binary);
+void save(std::string nazwa) {
+    std::ofstream wyjscie(nazwa, std::ios::binary);
 
-    szerokoscObrazka = szerokosc/2;
-    wysokoscObrazka = wysokosc;
-
-    wyjscie.write( (char*)&identyfikator, sizeof(char)*2 );
-    wyjscie.write( (char*)&szerokoscObrazka, sizeof(Uint16) );
-    wyjscie.write( (char*)&wysokoscObrazka, sizeof(Uint16) );
-    wyjscie.write( (char*)&tryb, sizeof(Uint8) );
-    wyjscie.write( (char*)&dithering, sizeof(Uint8) );
-
-    Uint8 imgBuf[8];
-    Uint8 outBuf[5];
-    dithering = 0;
-    if(tryb == 0)
-    {
-        cout << "PROSZ� WYBRA� OBRAZ DO ZAPISU" << endl;
+    if (!wyjscie.is_open()) {
+        std::cerr << "Błąd: nie można otworzyć pliku do zapisu " << nazwa << std::endl;
         return;
     }
-    else if(tryb == 1 || tryb == 2){
-        for(int i = 0; i < ((szerokosc/2)*wysokosc); i+=8)
-        {
-            for(int j = 0; j < 8; j++) {
-                imgBuf[j] = z24RGBna5RGB(dane[i+j]);
-            }
-            pack8Colors(imgBuf, outBuf);
-            wyjscie.write((char*)&outBuf, sizeof(outBuf));
+
+    // Nagłówek pliku
+    char identyfikator[2] = {'P', 'J'};
+    Uint16 szerokoscObrazka = szerokosc / 2;
+    Uint16 wysokoscObrazka = wysokosc;
+
+    wyjscie.write(reinterpret_cast<char*>(&identyfikator), sizeof(char) * 2);
+    wyjscie.write(reinterpret_cast<char*>(&szerokoscObrazka), sizeof(Uint16));
+    wyjscie.write(reinterpret_cast<char*>(&wysokoscObrazka), sizeof(Uint16));
+    wyjscie.write(reinterpret_cast<char*>(&dithering), sizeof(int));
+    wyjscie.write(reinterpret_cast<char*>(&blackandwhite), sizeof(int));
+    wyjscie.write(reinterpret_cast<char*>(&yiqstatus), sizeof(int));
+    wyjscie.write(reinterpret_cast<char*>(&bit), sizeof(int));
+    wyjscie.write(reinterpret_cast<char*>(&prediction), sizeof(int));
+    wyjscie.write(reinterpret_cast<char*>(&compression), sizeof(int));
+
+    if (blackandwhite == 1) {
+
+        int rozmiar = static_cast<int>(dane8.comp.size());
+        wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
+
+        for (auto& element : dane8.comp) {
+            wyjscie.write((char*)&element, sizeof(Uint8));
         }
+    } else {
 
-    }else if(tryb == 3 || tryb == 4 || tryb == 5){
+        int rozmiar = static_cast<int>(dane24.comp1.size());
+        wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
 
-            for(Uint8 i = 0; i < 32; i++)
-            {
-            wyjscie.write( (char*)&paleta5[i].r, sizeof(Uint8));
-            wyjscie.write( (char*)&paleta5[i].g, sizeof(Uint8));
-            wyjscie.write( (char*)&paleta5[i].b, sizeof(Uint8));
-            }
-            Uint8 index;
 
-            for(int i = 0; i < ((szerokosc/2)*wysokosc); i+=8)
-            {
-                for(int j = 0; j < 8; j++) {
-                    imgBuf[j] = (Uint8)znajdzSasiada(dane[i+j]);
-                    wyjscie.write((char*)&imgBuf[j], sizeof(imgBuf[j]));
-                }
-                //pack8Colors(imgBuf, outBuf);
-                //wyjscie.write((char*)&outBuf, sizeof(outBuf));
-            }
+        for (size_t i = 0; i < rozmiar; ++i) {
+            wyjscie.write((char*)&dane24.comp1[i], sizeof(Uint8));
+            wyjscie.write((char*)&dane24.comp2[i], sizeof(Uint8));
+            wyjscie.write((char*)&dane24.comp3[i], sizeof(Uint8));
         }
     }
+
+    if (!wyjscie) {
+        std::cerr << "Błąd podczas zapisywania pliku!" << std::endl;
+    }
+
+    wyjscie.close();
+}
+
+void narysujDane8(int xStart, int yStart){
+    int k = 0;
+    for(int y = yStart; y < yStart + wysokosc; y++)
+    {
+        for(int x = xStart; x < xStart + szerokosc/2; x++)
+        {
+            setPixel(x,y,dane8.comp[k], dane8.comp[k], dane8.comp[k]);
+            k++;
+        }
+    }
+    SDL_UpdateWindowSurface(window);
+}
+
+void narysujDane24(int xStart, int yStart){
+    int k = 0;
+    for(int y = yStart; y < yStart + wysokosc; y++)
+    {
+        for(int x = xStart; x < xStart + szerokosc/2; x++)
+        {
+            setPixel(x,y,dane24.comp1[k], dane24.comp2[k], dane24.comp3[k]);
+            k++;
+        }
+    }
+    SDL_UpdateWindowSurface(window);
+}
+
 
 void narysujDane(int xStart, int yStart){
     int k = 0;
@@ -318,77 +359,91 @@ void narysujDane(int xStart, int yStart){
     SDL_UpdateWindowSurface(window);
 }
 
-bool read(string nazwa){
-    ifstream wejscie(nazwa, ios::binary);
+bool read(std::string nazwa) {
+    clearVector24();
+    clearVector8();
+    std::ifstream wejscie(nazwa, std::ios::binary);
 
-    if(wejscie){
-        wejscie.read( (char*)&identyfikator, sizeof(char)*2 );
-        wejscie.read( (char*)&szerokoscObrazka, sizeof(Uint16) );
-        wejscie.read( (char*)&wysokoscObrazka, sizeof(Uint16) );
-        wejscie.read( (char*)&tryb, sizeof(Uint8) );
-        wejscie.read( (char*)&dithering, sizeof(Uint8) );
+    if (!wejscie.is_open()) {
+        std::cerr << "Błąd: nie można otworzyć pliku " << nazwa << std::endl;
+        return false;
+    }
 
-        if(identyfikator[0] == 'P' && identyfikator[1] == 'J'){
-            wysokosc = wysokoscObrazka;
-            szerokosc = szerokoscObrazka*2;
-            dane = new SDL_Color[szerokoscObrazka*wysokoscObrazka];
+    // Odczytaj nagłówek pliku
+    char identyfikator[2];
+    Uint16 szerokoscObrazka, wysokoscObrazka;
+    int dithering, blackandwhite, yiqstatus, bit, prediction, compression;
 
-            window = SDL_CreateWindow(tytul, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, szerokosc*2, wysokosc*2, SDL_WINDOW_SHOWN);
+    wejscie.read(reinterpret_cast<char*>(&identyfikator), sizeof(char) * 2);
+    wejscie.read(reinterpret_cast<char*>(&szerokoscObrazka), sizeof(Uint16));
+    wejscie.read(reinterpret_cast<char*>(&wysokoscObrazka), sizeof(Uint16));
+    wejscie.read(reinterpret_cast<char*>(&dithering), sizeof(int));
+    wejscie.read(reinterpret_cast<char*>(&blackandwhite), sizeof(int));
+    wejscie.read(reinterpret_cast<char*>(&yiqstatus), sizeof(int));
+    wejscie.read(reinterpret_cast<char*>(&bit), sizeof(int));
+    wejscie.read(reinterpret_cast<char*>(&prediction), sizeof(int));
+    wejscie.read(reinterpret_cast<char*>(&compression), sizeof(int));
 
-            if (window == NULL){
-                printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-                return false;
-            }
+    if (!wejscie) {
+        std::cerr << "Błąd podczas odczytu nagłówka pliku!" << std::endl;
+        wejscie.close();
+        return false;
+    }
 
-            screen = SDL_GetWindowSurface(window);
+    if (identyfikator[0] == 'P' && identyfikator[1] == 'J') {
+        int wysokosc = wysokoscObrazka;
+        int szerokosc = szerokoscObrazka * 2;
 
-            if (screen == NULL) {
-                fprintf(stderr, "SDL_GetWindowSurface Error: %s\n", SDL_GetError());
-                return false;
-            }
+        // Odczytaj rozmiar danych
+        int size = 0;
+        wejscie.read(reinterpret_cast<char*>(&size), sizeof(int));
+        if (size <= 0) {
+            std::cerr << "Błąd: rozmiar danych (color) jest nieprawidłowy: " << size << std::endl;
+            wejscie.close();
+            return false;
+        }
 
-            SDL_UpdateWindowSurface(window);
-
-            Uint8 inBuf[5] = {};
-            Uint8 outBuf[8];
-            if(tryb == 1 || tryb == 2){
-                for(int i = 0; i < ((szerokosc/2)*wysokosc); i+=8) {
-                    wejscie.read((char*)&inBuf, sizeof(inBuf));
-                    unpack8Colors(inBuf, outBuf);
-
-                    for(int j = 0; j < 8; j++) {
-                            SDL_Color kolor = z5RGBna24RGB(outBuf[j]);
-                            dane[i+j] = kolor;
-                    }
-                }
-                narysujDane(szerokosc/2,0);
-                return true;
-            }
-            else if(tryb == 3 || tryb == 4 || tryb ==5){
-                    for(Uint8 i = 0; i < 32; i++){
-                        wejscie.read( (char*)&paleta5[i].r, sizeof(Uint8));
-                        wejscie.read( (char*)&paleta5[i].g, sizeof(Uint8));
-                        wejscie.read( (char*)&paleta5[i].b, sizeof(Uint8));
-                    }
-
-                    narysujPalete(0, 0, paleta5);
-
-                    for(int i = 0; i < ((szerokosc/2)*wysokosc); i+=8) {
-                        //wejscie.read((char*)&inBuf, sizeof(inBuf));
-                        //unpack8Colors(inBuf, outBuf);
-                            for(int j = 0; j < 8; j++) {
-                                wejscie.read((char*)&outBuf[j], sizeof(outBuf[j]));
-                                dane[i+j] = paleta5[outBuf[j]];
-                        }
-                    }
-                    narysujDane(szerokosc/2,0);
-                    return true;
+        if (blackandwhite == 1) {
+            // Odczytaj każdy element wektora dane8.comp
+            Uint8 zmienna;
+            
+            for (int i = 0; i < size; ++i) {
+                wejscie.read((char*)&zmienna, sizeof(Uint8));
+                dane8.comp.push_back(zmienna);
+                if (!wejscie) {
+                    std::cerr << "Błąd podczas odczytu danych (dane8.comp)!" << std::endl;
+                    wejscie.close();
+                    return false;
                 }
             }
+        } else {
+            // Odczytaj każdy element wektorów dane24
+            Uint8 r, g, b;
+
+            for (int i = 0; i < size; ++i) {
+                wejscie.read((char*)&r, sizeof(Uint8));
+                wejscie.read((char*)&g, sizeof(Uint8));
+                wejscie.read((char*)&b, sizeof(Uint8));
+
+                dane24.comp1.push_back(r);
+                dane24.comp2.push_back(g);
+                dane24.comp3.push_back(b);
+
+                if (!wejscie) {
+                    std::cerr << "Błąd podczas odczytu danych (dane24)!" << std::endl;
+                    wejscie.close();
+                    return false;
+                }
+            }
+        }
+
         wejscie.close();
         return true;
+    } else {
+        std::cerr << "Błąd: nieprawidłowy identyfikator pliku." << std::endl;
+        wejscie.close();
+        return false;
     }
-    else return false;
 }
 
 bool odczytajPlik_bmp(string nazwa){

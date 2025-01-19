@@ -79,7 +79,7 @@ void ditheringBayer(){
             if(blue > 255) blue = 255;
             if(blue < 0) blue = 0;
 
-            setRGB555(x + szerokosc/2, y, (Uint8)red, (Uint8)green, (Uint8)blue);
+            setRGB565(x + szerokosc/2, y, (Uint8)red, (Uint8)green, (Uint8)blue);
         }
     }
     SDL_UpdateWindowSurface(window);
@@ -153,7 +153,7 @@ void ditheringBayerBW(){
             Uint8 kolor5bit = z24RGBna5BW(nowyKolorBW);
             SDL_Color nowyKolor = z5BWna24RGB(kolor5bit);
 
-            setPixel(x + szerokosc/2, y, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+            setRGB565(x + szerokosc/2, y, nowyKolor.r, nowyKolor.g, nowyKolor.b);
         }
     }
     SDL_UpdateWindowSurface(window);

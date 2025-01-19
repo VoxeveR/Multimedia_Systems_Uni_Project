@@ -6,16 +6,22 @@
 #include <math.h>
 #include <fstream>
 #include <iostream>
+#include <thread>
 #include <vector>
 #include <string>
 #include <SDL2/SDL.h>
 
-void zczytajDane(dane888* dataArr);
+void zczytajDane();
+void zczytajDaneBW();
 void zczytajDane8x8(int xStart, int yStart);
+void clearVector24();
+void clearVector8();
 //void unpack8Colors(Uint8* input, Uint8* output);
 //void pack8Colors(Uint8* input, Uint8* output);
 void save(std::string nazwa);
 void narysujDane(int xStart, int yStart);
+void narysujDane24(int xStart, int yStart);
+void narysujDane8(int xStart, int yStart);
 bool read(std::string nazwa);
 bool odczytajPlik_bmp(std::string nazwa);
 void saveRightHalfBMP(std::string nazwa);

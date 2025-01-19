@@ -26,9 +26,17 @@ SDL_Color paletaCala[32];
 
 int tryb = 0;
 int dithering = 0;
+int blackandwhite = 0;
+int yiqstatus = 0;
+int bit = 24;
+int prediction = 0;
+int compression = 0;
 int wysokoscObrazka = 0;
 int szerokoscObrazka = 0;
 char identyfikator[] = "  ";
+
+dane888 dane24;
+daneBW dane8;
 
 //wartosci domyslne
 int szerokosc = 640;
