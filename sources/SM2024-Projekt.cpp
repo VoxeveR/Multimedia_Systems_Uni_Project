@@ -100,11 +100,10 @@ int main(int argc, char* argv[]) {
                             cout << "Blad odczytu pilku. Nacisnij dowolny klawisz aby kontynuowac...";
                             _getch();
                         }
-
-                        narysujDane(szerokosc/2,0);
+                        std::cout<< szerokosc;
+                        //narysujDane8(szerokosc/2, 0);
                         break;
-
-                    }else if (counter1 == 3) {
+                    } else if (counter1 == 3) {
                         color(15);
                         cout << "Wybrano opcje: Wyjdz z programu" << endl;
                         return 0;
@@ -232,7 +231,7 @@ int main(int argc, char* argv[]) {
 
                             std::cout << "czyBMP: " << czyBMP << std::endl;
                             if(czyBMP) odczytajPlik_bmp(nazwa);
-                            else narysujDane(szerokosc/2,0);
+                            else narysujDane8(szerokosc/2,0);
                             option = true;
                             blackandwhite = 0;
                             prediction = 0;

@@ -286,6 +286,7 @@ void save(std::string nazwa) {
     wyjscie.write(reinterpret_cast<char*>(&bit), sizeof(int));
     wyjscie.write(reinterpret_cast<char*>(&prediction), sizeof(int));
     wyjscie.write(reinterpret_cast<char*>(&compression), sizeof(int));
+    
 
     if (blackandwhite == 1) {
 
@@ -321,8 +322,11 @@ void narysujDane8(int xStart, int yStart){
     {
         for(int x = xStart; x < xStart + szerokosc/2; x++)
         {
-            setPixel(x,y,dane8.comp[k], dane8.comp[k], dane8.comp[k]);
-            k++;
+            if(k!=64000){
+                            std::cout<<"xd"<<k<<std::endl;
+                setPixel(x, y, dane8.comp[k], dane8.comp[k], dane8.comp[k]);
+                ++k;
+            }
         }
     }
     SDL_UpdateWindowSurface(window);
@@ -394,6 +398,22 @@ bool read(std::string nazwa) {
         int wysokosc = wysokoscObrazka;
         int szerokosc = szerokoscObrazka * 2;
 
+            window = SDL_CreateWindow(tytul, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, szerokosc*2, wysokosc*2, SDL_WINDOW_SHOWN);
+
+            if (window == NULL){
+                printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
+                return false;
+            }
+
+            screen = SDL_GetWindowSurface(window);
+
+            if (screen == NULL) {
+                fprintf(stderr, "SDL_GetWindowSurface Error: %s\n", SDL_GetError());
+                return false;
+            }
+
+            SDL_UpdateWindowSurface(window);
+
         // Odczytaj rozmiar danych
         int size = 0;
         wejscie.read(reinterpret_cast<char*>(&size), sizeof(int));
@@ -408,6 +428,7 @@ bool read(std::string nazwa) {
             Uint8 zmienna;
             
             for (int i = 0; i < size; ++i) {
+               // std::cout<<"xd"<< i << std::endl;
                 wejscie.read((char*)&zmienna, sizeof(Uint8));
                 dane8.comp.push_back(zmienna);
                 if (!wejscie) {
@@ -416,10 +437,14 @@ bool read(std::string nazwa) {
                     return false;
                 }
             }
+            narysujDane8(szerokosc/2, 0);
+            
+                        SDL_UpdateWindowSurface(window);
+            std::cout<<"wtf";
         } else {
             // Odczytaj każdy element wektorów dane24
             Uint8 r, g, b;
-
+            std::cout<<"x2d"<<std::endl;
             for (int i = 0; i < size; ++i) {
                 wejscie.read((char*)&r, sizeof(Uint8));
                 wejscie.read((char*)&g, sizeof(Uint8));
