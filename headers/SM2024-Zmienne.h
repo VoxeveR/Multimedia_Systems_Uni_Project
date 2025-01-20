@@ -49,8 +49,13 @@ struct daneBW{
     std::vector<Uint8> comp;
 };
 
+struct dane565{
+    std::vector<Uint16> comp;
+}
+
 extern dane888 dane24;
 extern daneBW dane8;
+extern dane565 dane16;
 
 enum FilterType {
     NO_FILTER,

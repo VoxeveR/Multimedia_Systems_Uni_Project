@@ -35,6 +35,15 @@ void zczytajDaneBW(){
     }
 }
 
+void zczytajDane16(){
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            Uint16 color = getRGB565_(x, y);
+            dane8.comp.push_back(color);
+        }
+    }
+}
+
 void zczytajDane8x8(int xStart, int yStart){
     int k = 0;
     for(int y = yStart; y < yStart + wysokosc; y+=8) //wysokoscObrazka zamiast wysokosc wczesniej bylo
@@ -62,6 +71,10 @@ void clearVector8(){
     dane8.comp.clear();
 }
 
+void clearVector16(){
+    dane16.comp.clear();
+}
+
 void clearArray(){
     //Clear array
     int sizeArray = sizeof(data555)/sizeof(data555[0]);
@@ -75,8 +88,6 @@ void saveBW(std::string fileName, Uint8* dane, int size){
 
     output.close();
 }
-
-
 
 void saveRGB888(std::string fileName){
     ofstream output(fileName, ios::binary);
@@ -287,25 +298,52 @@ void save(std::string nazwa) {
     wyjscie.write(reinterpret_cast<char*>(&prediction), sizeof(int));
     wyjscie.write(reinterpret_cast<char*>(&compression), sizeof(int));
     
-
-    if (blackandwhite == 1) {
-
-        int rozmiar = static_cast<int>(dane8.comp.size());
-        wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
-
-        for (auto& element : dane8.comp) {
-            wyjscie.write((char*)&element, sizeof(Uint8));
+    if(bit == 16){
+        if(prediction == 1){
+            filterData(FilterType::LINE_DIFFERENCE);
         }
-    } else {
 
-        int rozmiar = static_cast<int>(dane24.comp1.size());
-        wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
+        int rozmiar = static_cast<int>(dane16.comp.size());
+        wyjscie.write(reinterpret_cast<char*>(&rozmair), sizeof(int));
+
+        for(auto& element: dane16.comp){
+            wyjscie.write((char*)&element, sizeof(Uint16));
+        }
+
+    }else{
+        if(prediction == 1){
+            filterData(FilterType::LINE_DIFFERENCE);
+        }
+
+        if (blackandwhite == 1) {
+            if(compression == 1){
+
+            }else if(compression == 2){
+
+            }else{
+                int rozmiar = static_cast<int>(dane8.comp.size());
+                wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
+
+                for (auto& element : dane8.comp) {
+                    wyjscie.write((char*)&element, sizeof(Uint8));
+                }
+            }
+        }else{
+            if(compression == 1){
+
+            }else if(compression == 2){
+
+            }else{
+                int rozmiar = static_cast<int>(dane24.comp1.size());
+                wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
 
 
-        for (size_t i = 0; i < rozmiar; ++i) {
-            wyjscie.write((char*)&dane24.comp1[i], sizeof(Uint8));
-            wyjscie.write((char*)&dane24.comp2[i], sizeof(Uint8));
-            wyjscie.write((char*)&dane24.comp3[i], sizeof(Uint8));
+                for (size_t i = 0; i < rozmiar; ++i) {
+                    wyjscie.write((char*)&dane24.comp1[i], sizeof(Uint8));
+                    wyjscie.write((char*)&dane24.comp2[i], sizeof(Uint8));
+                    wyjscie.write((char*)&dane24.comp3[i], sizeof(Uint8));
+                }
+            }
         }
     }
 
@@ -323,7 +361,6 @@ void narysujDane8(int xStart, int yStart){
         for(int x = xStart; x < xStart + szerokosc/2; x++)
         {
             if(k!=64000){
-                            std::cout<<"xd"<<k<<std::endl;
                 setPixel(x, y, dane8.comp[k], dane8.comp[k], dane8.comp[k]);
                 ++k;
             }
@@ -338,8 +375,25 @@ void narysujDane24(int xStart, int yStart){
     {
         for(int x = xStart; x < xStart + szerokosc/2; x++)
         {
-            setPixel(x,y,dane24.comp1[k], dane24.comp2[k], dane24.comp3[k]);
-            k++;
+            if(k!=64000){
+                setPixel(x,y,dane24.comp1[k], dane24.comp2[k], dane24.comp3[k]);
+                k++;
+            }
+        }
+    }
+    SDL_UpdateWindowSurface(window);
+}
+
+void narysujDane16(int xStart, int yStart){
+    int k = 0;
+    for(int y = yStart; y < yStart + wysokosc; y++)
+    {
+        for(int x = xStart; x < xStart + szerokosc/2; x++)
+        {
+            if(k!=64000){
+                setRGB565(x, y, dane16.comp[k]);
+                k++;
+            }
         }
     }
     SDL_UpdateWindowSurface(window);
@@ -373,7 +427,6 @@ bool read(std::string nazwa) {
         return false;
     }
 
-    // Odczytaj nagłówek pliku
     char identyfikator[2];
     Uint16 szerokoscObrazka, wysokoscObrazka;
     int dithering, blackandwhite, yiqstatus, bit, prediction, compression;
@@ -422,46 +475,57 @@ bool read(std::string nazwa) {
             wejscie.close();
             return false;
         }
+        if(bit == 16){
+            Uint16 zmienna;
 
-        if (blackandwhite == 1) {
-            // Odczytaj każdy element wektora dane8.comp
-            Uint8 zmienna;
-            
-            for (int i = 0; i < size; ++i) {
-               // std::cout<<"xd"<< i << std::endl;
-                wejscie.read((char*)&zmienna, sizeof(Uint8));
-                dane8.comp.push_back(zmienna);
+            for(int i = 0; i < size; i++){
+                wejscie.read((char*)&zmienna, sizeof(Uint16));
+                dane16.comp.push_back(zmienna);
                 if (!wejscie) {
                     std::cerr << "Błąd podczas odczytu danych (dane8.comp)!" << std::endl;
                     wejscie.close();
                     return false;
                 }
             }
-            narysujDane8(szerokosc/2, 0);
-            
-                        SDL_UpdateWindowSurface(window);
-            std::cout<<"wtf";
-        } else {
-            // Odczytaj każdy element wektorów dane24
-            Uint8 r, g, b;
-            std::cout<<"x2d"<<std::endl;
-            for (int i = 0; i < size; ++i) {
-                wejscie.read((char*)&r, sizeof(Uint8));
-                wejscie.read((char*)&g, sizeof(Uint8));
-                wejscie.read((char*)&b, sizeof(Uint8));
-
-                dane24.comp1.push_back(r);
-                dane24.comp2.push_back(g);
-                dane24.comp3.push_back(b);
-
-                if (!wejscie) {
-                    std::cerr << "Błąd podczas odczytu danych (dane24)!" << std::endl;
-                    wejscie.close();
-                    return false;
+        }else{
+            if (blackandwhite == 1) {
+                Uint8 zmienna;
+                
+                for (int i = 0; i < size; ++i) {
+                    wejscie.read((char*)&zmienna, sizeof(Uint8));
+                    dane8.comp.push_back(zmienna);
+                    if (!wejscie) {
+                        std::cerr << "Błąd podczas odczytu danych (dane8.comp)!" << std::endl;
+                        wejscie.close();
+                        return false;
+                    }
                 }
+                narysujDane8(szerokosc/2, 0);
+                
+                SDL_UpdateWindowSurface(window);
+            } else {
+                Uint8 r, g, b;
+
+                for (int i = 0; i < size; ++i) {
+                    wejscie.read((char*)&r, sizeof(Uint8));
+                    wejscie.read((char*)&g, sizeof(Uint8));
+                    wejscie.read((char*)&b, sizeof(Uint8));
+
+                    dane24.comp1.push_back(r);
+                    dane24.comp2.push_back(g);
+                    dane24.comp3.push_back(b);
+
+                    if (!wejscie) {
+                        std::cerr << "Błąd podczas odczytu danych (dane24)!" << std::endl;
+                        wejscie.close();
+                        return false;
+                    }
+                }
+
+                narysujDane24(szerokosc/2, 0);
+                SDL_UpdateWindowSurface(window);4
             }
         }
-
         wejscie.close();
         return true;
     } else {

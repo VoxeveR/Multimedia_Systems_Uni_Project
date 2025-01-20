@@ -82,7 +82,7 @@ void Funkcja2() {
             }
             
         }
-        zczytajDaneBW();
+        
     }else{
         if(dithering == 1) ditheringBayer();
         else{
@@ -95,8 +95,10 @@ void Funkcja2() {
             }
 
         }
-        zczytajDane();
+
     }
+
+    zczytajDane16();
 
     SDL_UpdateWindowSurface(window);
 }
@@ -137,54 +139,23 @@ void Funkcja4() {
 
 //filtrowanie danych
 void Funkcja5() {
-    clearVector24();
-    clearVector8();
-    RightToLeft();
-    
-    filterData(FilterType::LINE_DIFFERENCE);
-    narysujDane24(szerokosc/2,0);
+    prediction = 1;
+
 
     SDL_UpdateWindowSurface(window);
-    zczytajDane8x8(szerokosc/2, 0);
 }
 
 // Kompresja bezstratna LZ77
 void Funkcja6() {
-
-    RightToLeft();
-
-    // LZ77Kompresja();
+    compression = 1;
 
     SDL_UpdateWindowSurface(window);
-
 }
 
 // Transformata dct
 void Funkcja7() {
-
-    int index = 0;
-
-    for (int r = 0; r < 4; r++) {
-        for (int g = 0; g < 4; g++) {
-            for (int b = 0; b < 2; b++) {
-                paletaCala[index].r = r * 80;
-                paletaCala[index].g = g * 80;
-                paletaCala[index].b = b * 255;
-                index++;
-                if (index >= 32) {
-                    break;
-                }
-            }
-            if (index >= 32) {
-                break;
-            }
-        }
-        if (index >= 32) {
-            break;
-        }
-    }
-
-    narysujPalete(0,0,paletaCala);
+    compression = 2;
+    
     SDL_UpdateWindowSurface(window);
 }
 

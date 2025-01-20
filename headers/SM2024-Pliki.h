@@ -14,8 +14,10 @@
 void zczytajDane();
 void zczytajDaneBW();
 void zczytajDane8x8(int xStart, int yStart);
+void zczytajDane16();
 void clearVector24();
 void clearVector8();
+void clearVector16();
 //void unpack8Colors(Uint8* input, Uint8* output);
 //void pack8Colors(Uint8* input, Uint8* output);
 void save(std::string nazwa);

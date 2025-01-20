@@ -37,6 +37,7 @@ char identyfikator[] = "  ";
 
 dane888 dane24;
 daneBW dane8;
+dane565 dane16;
 
 //wartosci domyslne
 int szerokosc = 640;
