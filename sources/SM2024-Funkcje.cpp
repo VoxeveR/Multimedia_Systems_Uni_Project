@@ -39,7 +39,6 @@ void RightToLeft(){
 //Skala szarości
 void Funkcja1() {
     RightToLeft();
-    clearVector24();
     clearVector8();
 
     blackandwhite = 1;
@@ -63,10 +62,8 @@ void Funkcja1() {
 
 //16-bit
 void Funkcja2() {
-
     RightToLeft();
-    clearVector24();
-    clearVector8();
+    clearVector16();
 
     bit = 16;
     std::cout << "Dithering" << dither << std::endl;

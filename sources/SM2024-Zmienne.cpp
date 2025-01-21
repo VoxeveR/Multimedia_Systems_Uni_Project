@@ -41,7 +41,7 @@ dane565 dane16;
 
 //wartosci domyslne
 int szerokosc = 640;
-int wysokosc = 400;
+int wysokosc = 200;
 int COLORS_N = 32;
 
 //tablica bayera do ditheringu

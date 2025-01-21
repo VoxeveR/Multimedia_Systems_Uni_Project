@@ -51,7 +51,7 @@ struct daneBW{
 
 struct dane565{
     std::vector<Uint16> comp;
-}
+};
 
 extern dane888 dane24;
 extern daneBW dane8;

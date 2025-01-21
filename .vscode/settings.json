@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*html": "html",
         "iostream": "cpp",
         "xstring": "cpp",
         "algorithm": "cpp",
@@ -68,7 +69,8 @@
         "xmemory": "cpp",
         "xstddef": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "semaphore": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

@@ -5,8 +5,10 @@
 #include "../headers/SM2024-MedianCut.h"
 #include "../headers/SM2024-Pliki.h"
 #include "../headers/SM2024-Dithering.h"
+#include "../headers/SM2024-Kompresje.h"
 #include "../headers/SM2024-Konwersje.h"
 #include "../headers/SM2024-Modele.h"
+#include "../headers/SM2024-Filtrowanie.h"
 
 using namespace std;
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -17,18 +19,25 @@ Uint16 data555[320*200];
 
 void zczytajDane(){
     for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            SDL_Color color = getPixel(x, y);
-            dane24.comp1.push_back(color.r);
-            dane24.comp2.push_back(color.g);
-            dane24.comp3.push_back(color.b);
+        for(int x = szerokosc/2; x < szerokosc; x++){
+            if(yiqstatus == 0){
+                SDL_Color color = getPixel(x, y);
+                dane24.comp1.push_back(color.r);
+                dane24.comp2.push_back(color.g);
+                dane24.comp3.push_back(color.b);
+            }else{
+                YIQ color = RGBtoYIQ(x, y);
+                dane24.comp1.push_back(color.Y);
+                dane24.comp2.push_back(color.I);
+                dane24.comp3.push_back(color.Q);
+            }
         }
     }
 }
 
 void zczytajDaneBW(){
     for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
+        for(int x = szerokosc/2; x < szerokosc; x++){
             SDL_Color color = getPixel(x, y);
             dane8.comp.push_back(color.r);
         }
@@ -37,9 +46,9 @@ void zczytajDaneBW(){
 
 void zczytajDane16(){
     for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
+        for(int x = szerokosc/2; x < szerokosc; x++){
             Uint16 color = getRGB565_(x, y);
-            dane8.comp.push_back(color);
+            dane16.comp.push_back(color);
         }
     }
 }
@@ -303,24 +312,51 @@ void save(std::string nazwa) {
             filterData(FilterType::LINE_DIFFERENCE);
         }
 
-        int rozmiar = static_cast<int>(dane16.comp.size());
-        wyjscie.write(reinterpret_cast<char*>(&rozmair), sizeof(int));
+        if(compression == 1){
+            //zapis z kompresja LZ77 dla 16bit
+            std::vector<token<Uint16>> tokenComp = LZ77Kompresja<Uint16>(dane16.comp, dane16.comp.size());
 
-        for(auto& element: dane16.comp){
-            wyjscie.write((char*)&element, sizeof(Uint16));
+            int rozmiar = static_cast<int>(tokenComp.size());
+            wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
+            for(token<Uint16> t: tokenComp){
+                wyjscie.write(reinterpret_cast<char*>(&t), sizeof(token<Uint16>));
+            }
+        }else if(compression == 2){
+
+        }else{
+            //zapis bez kompresja LZ77 dla 16bit
+            int rozmiar = static_cast<int>(dane16.comp.size());
+            wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
+
+            for(auto& element: dane16.comp){
+                wyjscie.write((char*)&element, sizeof(Uint16));
+            }
         }
 
     }else{
+        cout << "Wywalone przed filtracji" << endl;
+        if(yiqstatus == 0 and blackandwhite == 0){
+            zczytajDane();
+        }
         if(prediction == 1){
             filterData(FilterType::LINE_DIFFERENCE);
         }
-
+        cout << "Wywalone po filtracji" << endl;
         if (blackandwhite == 1) {
             if(compression == 1){
+                //zapis z kompresja LZ77 dla czarnobiałego
+                std::vector<token<Uint8>> tokenComp = LZ77Kompresja<Uint8>(dane8.comp, dane8.comp.size());
+
+                int rozmiar = static_cast<int>(tokenComp.size());
+                wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
+                for(token<Uint8> t: tokenComp){
+                    wyjscie.write(reinterpret_cast<char*>(&t), sizeof(token<Uint8>));
+                }
 
             }else if(compression == 2){
 
             }else{
+                //zapis bez kompresji dla czanobiałego
                 int rozmiar = static_cast<int>(dane8.comp.size());
                 wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
 
@@ -330,13 +366,34 @@ void save(std::string nazwa) {
             }
         }else{
             if(compression == 1){
+                //zapis z kompresja LZ77 dla 24bit
+                std::vector<token<Uint8>> tokenComp1 = LZ77Kompresja<Uint8>(dane24.comp1, dane24.comp1.size());
+                std::vector<token<Uint8>> tokenComp2 = LZ77Kompresja<Uint8>(dane24.comp2, dane24.comp2.size());
+                std::vector<token<Uint8>> tokenComp3 = LZ77Kompresja<Uint8>(dane24.comp3, dane24.comp3.size());
 
+                int rozmiar1 = static_cast<int>(tokenComp1.size());
+                wyjscie.write(reinterpret_cast<char*>(&rozmiar1), sizeof(int));
+                for(token<Uint8> t: tokenComp1){
+                    wyjscie.write(reinterpret_cast<char*>(&t), sizeof(token<Uint8>));
+                }
+
+                int rozmiar2 = static_cast<int>(tokenComp2.size());
+                wyjscie.write(reinterpret_cast<char*>(&rozmiar2), sizeof(int));
+                for(token<Uint8> t: tokenComp2){
+                    wyjscie.write(reinterpret_cast<char*>(&t), sizeof(token<Uint8>));
+                }
+
+                int rozmiar3 = static_cast<int>(tokenComp3.size());
+                wyjscie.write(reinterpret_cast<char*>(&rozmiar3), sizeof(int));
+                for(token<Uint8> t: tokenComp3){
+                    wyjscie.write(reinterpret_cast<char*>(&t), sizeof(token<Uint8>));
+                }
             }else if(compression == 2){
 
             }else{
+                //zapis bez kompresja LZ77 dla 24bit
                 int rozmiar = static_cast<int>(dane24.comp1.size());
                 wyjscie.write(reinterpret_cast<char*>(&rozmiar), sizeof(int));
-
 
                 for (size_t i = 0; i < rozmiar; ++i) {
                     wyjscie.write((char*)&dane24.comp1[i], sizeof(Uint8));
@@ -376,7 +433,12 @@ void narysujDane24(int xStart, int yStart){
         for(int x = xStart; x < xStart + szerokosc/2; x++)
         {
             if(k!=64000){
-                setPixel(x,y,dane24.comp1[k], dane24.comp2[k], dane24.comp3[k]);
+                if(yiqstatus == 0){
+                    setPixel(x,y,dane24.comp1[k], dane24.comp2[k], dane24.comp3[k]);
+                }else{
+                    setYIQ(x,y,dane24.comp1[k], dane24.comp2[k], dane24.comp3[k]);
+                }
+                
                 k++;
             }
         }
@@ -420,16 +482,13 @@ void narysujDane(int xStart, int yStart){
 bool read(std::string nazwa) {
     clearVector24();
     clearVector8();
+    clearVector16();
     std::ifstream wejscie(nazwa, std::ios::binary);
 
     if (!wejscie.is_open()) {
         std::cerr << "Błąd: nie można otworzyć pliku " << nazwa << std::endl;
         return false;
     }
-
-    char identyfikator[2];
-    Uint16 szerokoscObrazka, wysokoscObrazka;
-    int dithering, blackandwhite, yiqstatus, bit, prediction, compression;
 
     wejscie.read(reinterpret_cast<char*>(&identyfikator), sizeof(char) * 2);
     wejscie.read(reinterpret_cast<char*>(&szerokoscObrazka), sizeof(Uint16));
@@ -475,57 +534,148 @@ bool read(std::string nazwa) {
             wejscie.close();
             return false;
         }
-        if(bit == 16){
-            Uint16 zmienna;
 
-            for(int i = 0; i < size; i++){
-                wejscie.read((char*)&zmienna, sizeof(Uint16));
-                dane16.comp.push_back(zmienna);
-                if (!wejscie) {
-                    std::cerr << "Błąd podczas odczytu danych (dane8.comp)!" << std::endl;
-                    wejscie.close();
-                    return false;
+        if(compression == 1){
+            //dekompresja LZ77
+            if(bit == 16){
+                //dla 16bit
+                token<Uint16> zmienna;
+                std::vector<token<Uint16>> token16;
+
+                for(int i = 0; i < size; i++){
+                    wejscie.read((char*)&zmienna, sizeof(token<Uint16>));
+                    token16.push_back(zmienna);
                 }
-            }
-        }else{
-            if (blackandwhite == 1) {
-                Uint8 zmienna;
-                
-                for (int i = 0; i < size; ++i) {
-                    wejscie.read((char*)&zmienna, sizeof(Uint8));
-                    dane8.comp.push_back(zmienna);
-                    if (!wejscie) {
-                        std::cerr << "Błąd podczas odczytu danych (dane8.comp)!" << std::endl;
-                        wejscie.close();
-                        return false;
-                    }
+
+                LZ77Dekompresja<Uint16>(token16, dane16.comp);
+
+                if(prediction == 1){
+                    unFilterData(FilterType::LINE_DIFFERENCE);
                 }
-                narysujDane8(szerokosc/2, 0);
+
+                narysujDane16(szerokosc/2, 0);
                 
                 SDL_UpdateWindowSurface(window);
-            } else {
-                Uint8 r, g, b;
+            }else{
+                //dla 24
+                    if (blackandwhite == 1) {
+                        //dla czarnobiałego
+                        token<Uint8> zmienna;
+                        std::vector<token<Uint8>> token8;
+                        
+                        for (int i = 0; i < size; ++i) {
+                            wejscie.read((char*)&zmienna, sizeof(token<Uint8>));
+                            token8.push_back(zmienna);
+                        }
 
-                for (int i = 0; i < size; ++i) {
-                    wejscie.read((char*)&r, sizeof(Uint8));
-                    wejscie.read((char*)&g, sizeof(Uint8));
-                    wejscie.read((char*)&b, sizeof(Uint8));
+                        LZ77Dekompresja<Uint8>(token8, dane8.comp);
 
-                    dane24.comp1.push_back(r);
-                    dane24.comp2.push_back(g);
-                    dane24.comp3.push_back(b);
+                        if(prediction == 1){
+                            unFilterData(FilterType::LINE_DIFFERENCE);
+                        }
 
-                    if (!wejscie) {
-                        std::cerr << "Błąd podczas odczytu danych (dane24)!" << std::endl;
-                        wejscie.close();
-                        return false;
+                        narysujDane8(szerokosc/2, 0);
+                        
+                        SDL_UpdateWindowSurface(window);
+                    } else {
+                        //dla kolor RGB i YIQ
+                        token<Uint8> comp1, comp2, comp3;
+                        std::vector<token<Uint8>> tokenComp1, tokenComp2, tokenComp3;
+
+                        std::cout << "Dupa1" << std::endl;
+                        for (int i = 0; i < size; ++i) {
+                            wejscie.read((char*)&comp1, sizeof(token<Uint8>));
+                            tokenComp1.push_back(comp1);
+                        }
+                        std::cout << "Dup2" << std::endl;
+
+                        for (int i = 0; i < size; ++i) {
+                            wejscie.read((char*)&comp2, sizeof(token<Uint8>));
+                            tokenComp1.push_back(comp2);
+                        }
+                        std::cout << "Dupa3" << std::endl;
+
+                        for (int i = 0; i < size; ++i) {
+                            wejscie.read((char*)&comp3, sizeof(token<Uint8>));
+                            tokenComp1.push_back(comp3);
+                        }
+                        std::cout << "Dupa4" << std::endl;
+
+                        LZ77Dekompresja<Uint8>(tokenComp1, dane24.comp1);
+                                                std::cout << "Dupa5" << std::endl;
+
+                       LZ77Dekompresja<Uint8>(tokenComp2, dane24.comp2);
+                                                std::cout << "Dupa6" << std::endl;
+
+                        LZ77Dekompresja<Uint8>(tokenComp3, dane24.comp3);
+                                                std::cout << "Dupa7" << std::endl;
+
+
+
+                        if(prediction == 1){
+                            unFilterData(FilterType::LINE_DIFFERENCE);
+                        }
+
+                        narysujDane24(szerokosc/2, 0);
+                        SDL_UpdateWindowSurface(window);
                     }
                 }
+        }else if(compression == 2){
+            //dekompresja  DCT
+        }else{
+            //brak dekompresji
+            if(bit == 16){
+                Uint16 zmienna;
 
-                narysujDane24(szerokosc/2, 0);
-                SDL_UpdateWindowSurface(window);4
+                for(int i = 0; i < size; i++){
+                    wejscie.read((char*)&zmienna, sizeof(Uint16));
+                    dane16.comp.push_back(zmienna);
+                }
+                if(prediction == 1){
+                    unFilterData(FilterType::LINE_DIFFERENCE);
+                }
+
+                narysujDane16(szerokosc/2, 0);
+                
+                SDL_UpdateWindowSurface(window);
+            }else{
+                    if (blackandwhite == 1) {
+                        Uint8 zmienna;
+                        
+                        for (int i = 0; i < size; ++i) {
+                            wejscie.read((char*)&zmienna, sizeof(Uint8));
+                            dane8.comp.push_back(zmienna);
+                        }
+
+                        if(prediction == 1){
+                            unFilterData(FilterType::LINE_DIFFERENCE);
+                        }
+
+                        narysujDane8(szerokosc/2, 0);
+                        
+                        SDL_UpdateWindowSurface(window);
+                    } else {
+                        Uint8 r, g, b;
+
+                        for (int i = 0; i < size; ++i) {
+                            wejscie.read((char*)&r, sizeof(Uint8));
+                            wejscie.read((char*)&g, sizeof(Uint8));
+                            wejscie.read((char*)&b, sizeof(Uint8));
+
+                            dane24.comp1.push_back(r);
+                            dane24.comp2.push_back(g);
+                            dane24.comp3.push_back(b);
+                        }
+
+                        if(prediction == 1){
+                            unFilterData(FilterType::LINE_DIFFERENCE);
+                        }
+
+                        narysujDane24(szerokosc/2, 0);
+                        SDL_UpdateWindowSurface(window);
+                    }
+                }
             }
-        }
         wejscie.close();
         return true;
     } else {
