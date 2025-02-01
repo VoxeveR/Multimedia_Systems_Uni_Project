@@ -10,6 +10,7 @@
 #include "../headers/SM2024-Probkowanie.h"
 #include "../headers/SM2024-Kompresje.h"
 #include "../headers/SM2024-Filtrowanie.h"
+#include "../headers/SM2024-DCT.h"
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++                Funkcje napisane               ++

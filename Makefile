@@ -14,6 +14,7 @@ all:
 		$(SRC_DIR)/SM2024-Probkowanie.cpp \
 		$(SRC_DIR)/SM2024-Filtrowanie.cpp \
 		$(SRC_DIR)/SM2024-Kompresje.cpp \
+		$(SRC_DIR)/SM2024-DCT.cpp \
 		-lmingw32 -lSDL2main -lSDL2
 
 run: all
