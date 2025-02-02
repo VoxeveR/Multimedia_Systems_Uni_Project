@@ -334,14 +334,13 @@ void save(std::string nazwa) {
         }
 
     }else{
-        cout << "Wywalone przed filtracji" << endl;
         if(yiqstatus == 0 and blackandwhite == 0){
             zczytajDane();
         }
         if(prediction == 1){
             filterData(FilterType::LINE_DIFFERENCE);
         }
-        cout << "Wywalone po filtracji" << endl;
+        
         if (blackandwhite == 1) {
             if(compression == 1){
                 //zapis z kompresja LZ77 dla czarnobiałego
@@ -376,12 +375,14 @@ void save(std::string nazwa) {
                 for(token<Uint8> t: tokenComp1){
                     wyjscie.write(reinterpret_cast<char*>(&t), sizeof(token<Uint8>));
                 }
+                
 
                 int rozmiar2 = static_cast<int>(tokenComp2.size());
                 wyjscie.write(reinterpret_cast<char*>(&rozmiar2), sizeof(int));
                 for(token<Uint8> t: tokenComp2){
                     wyjscie.write(reinterpret_cast<char*>(&t), sizeof(token<Uint8>));
                 }
+
 
                 int rozmiar3 = static_cast<int>(tokenComp3.size());
                 wyjscie.write(reinterpret_cast<char*>(&rozmiar3), sizeof(int));
@@ -527,18 +528,15 @@ bool read(std::string nazwa) {
             SDL_UpdateWindowSurface(window);
 
         // Odczytaj rozmiar danych
-        int size = 0;
-        wejscie.read(reinterpret_cast<char*>(&size), sizeof(int));
-        if (size <= 0) {
-            std::cerr << "Błąd: rozmiar danych (color) jest nieprawidłowy: " << size << std::endl;
-            wejscie.close();
-            return false;
-        }
+        
+
 
         if(compression == 1){
             //dekompresja LZ77
             if(bit == 16){
                 //dla 16bit
+                int size = 0;
+                wejscie.read(reinterpret_cast<char*>(&size), sizeof(int));
                 token<Uint16> zmienna;
                 std::vector<token<Uint16>> token16;
 
@@ -559,6 +557,8 @@ bool read(std::string nazwa) {
             }else{
                 //dla 24
                     if (blackandwhite == 1) {
+                        int size = 0;
+                        wejscie.read(reinterpret_cast<char*>(&size), sizeof(int));
                         //dla czarnobiałego
                         token<Uint8> zmienna;
                         std::vector<token<Uint8>> token8;
@@ -579,37 +579,35 @@ bool read(std::string nazwa) {
                         SDL_UpdateWindowSurface(window);
                     } else {
                         //dla kolor RGB i YIQ
+                        int size1, size2, size3;
                         token<Uint8> comp1, comp2, comp3;
                         std::vector<token<Uint8>> tokenComp1, tokenComp2, tokenComp3;
 
-                        std::cout << "Dupa1" << std::endl;
-                        for (int i = 0; i < size; ++i) {
+
+                        
+                        wejscie.read(reinterpret_cast<char*>(&size1), sizeof(int));
+                        for (int i = 0; i < size1; ++i) {
                             wejscie.read((char*)&comp1, sizeof(token<Uint8>));
                             tokenComp1.push_back(comp1);
                         }
-                        std::cout << "Dup2" << std::endl;
-
-                        for (int i = 0; i < size; ++i) {
+                        
+                        
+                        wejscie.read(reinterpret_cast<char*>(&size2), sizeof(int));
+                        for (int i = 0; i < size2; ++i) {
                             wejscie.read((char*)&comp2, sizeof(token<Uint8>));
                             tokenComp1.push_back(comp2);
                         }
-                        std::cout << "Dupa3" << std::endl;
+                        
+                        wejscie.read(reinterpret_cast<char*>(&size3), sizeof(int));
 
-                        for (int i = 0; i < size; ++i) {
+                        for (int i = 0; i < size3; ++i) {
                             wejscie.read((char*)&comp3, sizeof(token<Uint8>));
                             tokenComp1.push_back(comp3);
                         }
-                        std::cout << "Dupa4" << std::endl;
 
                         LZ77Dekompresja<Uint8>(tokenComp1, dane24.comp1);
-                                                std::cout << "Dupa5" << std::endl;
-
-                       LZ77Dekompresja<Uint8>(tokenComp2, dane24.comp2);
-                                                std::cout << "Dupa6" << std::endl;
-
+                        LZ77Dekompresja<Uint8>(tokenComp2, dane24.comp2);
                         LZ77Dekompresja<Uint8>(tokenComp3, dane24.comp3);
-                                                std::cout << "Dupa7" << std::endl;
-
 
 
                         if(prediction == 1){
@@ -625,6 +623,8 @@ bool read(std::string nazwa) {
         }else{
             //brak dekompresji
             if(bit == 16){
+                int size = 0;
+                wejscie.read(reinterpret_cast<char*>(&size), sizeof(int));
                 Uint16 zmienna;
 
                 for(int i = 0; i < size; i++){
@@ -640,6 +640,8 @@ bool read(std::string nazwa) {
                 SDL_UpdateWindowSurface(window);
             }else{
                     if (blackandwhite == 1) {
+                        int size = 0;
+                        wejscie.read(reinterpret_cast<char*>(&size), sizeof(int));
                         Uint8 zmienna;
                         
                         for (int i = 0; i < size; ++i) {
@@ -655,6 +657,8 @@ bool read(std::string nazwa) {
                         
                         SDL_UpdateWindowSurface(window);
                     } else {
+                        int size = 0;
+                        wejscie.read(reinterpret_cast<char*>(&size), sizeof(int));
                         Uint8 r, g, b;
 
                         for (int i = 0; i < size; ++i) {

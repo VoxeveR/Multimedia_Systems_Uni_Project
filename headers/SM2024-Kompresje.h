@@ -3,6 +3,7 @@
 #define SM2024_KOMPRESJE_H_INCLUDED
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 struct slowo {
     Uint16 kod = 0;
@@ -78,37 +79,35 @@ std::vector<token<T>> LZ77Kompresja(std::vector<T> input, int length) {
             resultArr.push_back(token<T>(matchLength, matchDistance, nextChar));
             position += matchLength + 1;
         }
-    }
+    } 
+
     return resultArr;
 };
 
 template <typename T>
-std::vector<T> LZ77Dekompresja(std::vector<token<T>> tokens, std::vector<T> &output) {
-    output.reserve(tokens.size() * 2); // Optymalizacja alokacji pamięci
-    
-    for (const token<T>& tok : tokens) {
+void LZ77Dekompresja(std::vector<token<T>> &tokens, std::vector<T> &output) {
+    for (const token<T> tok : tokens) {
         if (tok.tokLength == 0) {
-            // Dla tokenu bez dopasowania po prostu dodajemy znak
             output.push_back(tok.rawValue);
+
         } else {
-            // Sprawdzamy czy mamy wystarczająco danych do skopiowania
+
             if (tok.shift > output.size()) {
                 throw std::runtime_error("Invalid compression data: shift larger than available data");
             }
             
             size_t startPos = output.size() - tok.shift;
-            // Kopiowanie z uwzględnieniem powtarzających się wzorców
+
             for (size_t i = 0; i < tok.tokLength; ++i) {
-                // Kopiujemy dane z już zdekompresowanej części
                 output.push_back(output[startPos + (i % tok.shift)]);
             }
             
             // Dodajemy następny znak
             output.push_back(tok.rawValue);
+
         }
     }
-    
-    return output;
+
 };
 
 
