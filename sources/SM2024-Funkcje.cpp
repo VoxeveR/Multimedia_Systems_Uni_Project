@@ -39,44 +39,27 @@ void RightToLeft(){
 
 //paleta narzucona
 void Funkcja1() {
+    float kolor = 0;
+    // for (int y=0; y< wysokosc; y++) {
+    //     for (int x=0; x<szerokosc/2; x++) {
+    //         setPixel(x, y, kolor, kolor, kolor);
+    //         kolor += 256.0 / (szerokosc * wysokosc);
+    //     }
+    // }
+    // for (int y=1; y<wysokosc; y+=2) {
+    //     for (int x=1; x<szerokosc/2; x+=2) {
+    //         setPixel(x , y , 255, 255, 255);
+    //         setPixel(x -1, y - 1 , 128, 128, 128);
+    //         setPixel(x , y - 1, 0, 0, 0);
+    //     }
+    // }
     RightToLeft();
-
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc / 2; x++){
-            setPixel(x + szerokosc/2, y , 0, 0, 0);
+    for(int i = szerokosc/2; i < szerokosc; i++){
+        for(int y = 0; y < wysokosc; y++){
+            setPixel(i,y,0,0,0);
         }
     }
-
-    dane888 dataCopy;
-    zczytajDane(&dataCopy);
-    dane888 data = filterData(FilterType::PAETH);
-
-    unFilterData(&data, FilterType::PAETH);
-    int k = 0;
-    std::cout << "Finished filter" << std::endl;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc / 2; x++){
-            setPixel(x + szerokosc / 2, y, data.comp1[k], data.comp2[k], data.comp3[k]);
-            k++;
-        }
-    }
-    
-    //initial project
-    //RightToLeft();
-    //HSLSampling();
-    //saveRGB888("test.jawa");
-    // identyfikator[0] = 'P';
-    // identyfikator[1] = 'J';
-    // tryb = 1;
-
-    // RightToLeft();
-
-    // if(dithering == 0) paletaNarzucona();
-    // if(dithering == 1) ditheringFloyd();
-    // if(dithering == 2) ditheringBayer();
-
     SDL_UpdateWindowSurface(window);
-    // zczytajDane8x8(szerokosc/2, 0);
 }
 
 
@@ -94,103 +77,161 @@ std::vector<Uint8> zczytajDaneBW(){
 
 //szarosc narzucona
 void Funkcja2() {
+    macierz blokDCT_Y;
+    macierz blokDCT_I;
+    macierz blokDCT_Q;
 
-    RightToLeft();
+    macierz blokDane_Y;
+    macierz blokDane_I;
+    macierz blokDane_Q;
 
-    // Uint8 dane[320*200];
+    macierz noweDane_Y;
+    macierz noweDane_I;
+    macierz noweDane_Q;
+   
+for (int by = 0; by < wysokosc; by += rozmiarBloku) {
+    for (int bx = 0; bx < szerokosc/2; bx += rozmiarBloku) {
+        // Process the current block
+        for (int y = 0; y < rozmiarBloku; y++) {
+            for (int x = 0; x < rozmiarBloku; x++) {
+                YIQ YIQret = RGBtoYIQ(bx + x, by + y);
+                blokDane_Y.dane[x][y] = YIQret.Y;
+                blokDane_Y.dct[x][y] = 0;
 
-    // zczytajDaneBW(dane);
+                blokDane_I.dane[x][y] = YIQret.I;
+                blokDane_I.dct[x][y] = 0;
 
-    // int k = 0;
-    // for(int y = 0; y < wysokosc; y++){
-    //     for(int x = 0; x < szerokosc/2; x++){
-    //         setPixel(x + szerokosc/2, y, dane[k], dane[k], dane[k]);
-    //         k++;
-    //     }
-    // }
-
-
-    std::vector<Uint8> array = zczytajDaneBW();
-    std::cout << "Zrobiono konwersję na BW\n";
-    // RLEKompresja(array, array.size(), "test.jawa");
-    saveVector<Uint8>(array, "test2.jawa");
-    // RLEDekompresja("test.jawa");
-
-    //
-
-    for(int x = 0; x < szerokosc; x++){
-        for(int y = 0; y < wysokosc; y++){
-            setPixel(x, y, 0, 0, 0);
+                blokDane_Q.dane[x][y] = YIQret.Q;
+                blokDane_Q.dct[x][y] = 0;
+            }
         }
+        // std::cout<<"BLOK Y" << std::endl;
+        // wyswietlDane(blokDane_Y);
+
+        // std::cout<<"BLOK I" << std::endl;
+        // wyswietlDane(blokDane_I);
+
+        // std::cout<<"BLOK Q" << std::endl;
+        // wyswietlDane(blokDane_Q);
+        // std::cout << std::endl;
+        blokDCT_Y = dct(blokDane_Y.dane);
+        blokDCT_I = dct(blokDane_I.dane);
+        blokDCT_Q = dct(blokDane_Q.dane);
+        // std::cout<<"DCT Y" <<std::endl;
+        // wyswietlDCT(blokDCT_Y);
+        // std::cout << std::endl;
+        //         std::cout<<"DCT I" <<std::endl;
+        // wyswietlDCT(blokDCT_I);
+        // std::cout << std::endl;
+        //         std::cout<<"DCT Q" <<std::endl;
+        // wyswietlDCT(blokDCT_Q);
+        // std::cout << std::endl;
+        noweDane_Y = idct(blokDCT_Y.dct);
+        noweDane_I = idct(blokDCT_I.dct);
+        noweDane_Q = idct(blokDCT_Q.dct);
+        // std::cout<<"NOWY BLOK Y" << std::endl;
+        // wyswietlDane(noweDane_Y);
+
+        // std::cout<<"NOWY BLOK I" << std::endl;
+        // wyswietlDane(noweDane_I);
+
+        // std::cout<<"NOWY BLOK Q" << std::endl;
+        // wyswietlDane(noweDane_Q);
+        // std::cout << std::endl;
+
+        for (int y = 0; y < rozmiarBloku; y++) {
+            for (int x = 0; x < rozmiarBloku; x++) {
+                setYIQ(bx + x + szerokosc/2, by + y,
+                         noweDane_Y.dane[x][y], noweDane_I.dane[x][y], noweDane_Q.dane[x][y]);
+            }
+        }
+           SDL_UpdateWindowSurface(window);
     }
-
-    LZWKompresja(array, array.size(), "test.jawa");    
+}
     SDL_UpdateWindowSurface(window);
-    LZWDekompresja("test.jawa");
-    
 
-    // saveBW("test.jawa", dane, sizeof(dane));
+//     macierz blokDCT;
+//     macierz blokDane; 
+//     macierz noweDane;
+   
+// for (int by = 0; by < wysokosc; by += rozmiarBloku) {
+//     for (int bx = 0; bx < szerokosc/2; bx += rozmiarBloku) {
+//         // Process the current block
+//         for (int y = 0; y < rozmiarBloku; y++) {
+//             for (int x = 0; x < rozmiarBloku; x++) {
+//                 blokDane.dane[x][y] = getPixel(bx + x, by + y).r;
+//                 blokDane.dct[x][y] = 0;
+//             }
+//         }
 
-   /* identyfikator[0] = 'P';
-    identyfikator[1] = 'J';
-    tryb = 2;
+//      //   wyswietlDane(blokDane);
+// //std::cout << std::endl;
+//         blokDCT = dct(blokDane.dane);
+//       //  wyswietlDCT(blokDCT);
+//      //   std::cout << std::endl;
+//         noweDane = idct(blokDCT.dct);
+//        // wyswietlDane(noweDane);
+//        // std::cout << std::endl;
 
-    RightToLeft();
-
-    if(dithering == 0) szaryNarzucony();
-    if(dithering == 1) ditheringFloydBW();
-    if(dithering == 2) ditheringBayerBW();*/
-
-   // zczytajDane8x8(szerokosc/2, 0);
+//         for (int y = 0; y < rozmiarBloku; y++) {
+//             for (int x = 0; x < rozmiarBloku; x++) {
+//                 setPixel(bx + x + szerokosc/2, by + y,
+//                          noweDane.dane[x][y], noweDane.dane[x][y], noweDane.dane[x][y]);
+//             }
+//         }
+//     }
+// }
 }
 
 //szarosc dedykowana
 void Funkcja3() {
-    identyfikator[0] = 'P';
-    identyfikator[1] = 'J';
-    tryb = 3;
-    obrazek = new SDL_Color[szerokosc/2*wysokosc];
 
-    RightToLeft();
-    if(dithering==0) szaryDedykowany();
-    if(dithering==1){
-        ileKubelkow = 0;
-        int numer = 0;
+        SDL_UpdateWindowSurface(window);
+    // identyfikator[0] = 'P';
+    // identyfikator[1] = 'J';
+    // tryb = 3;
+    // obrazek = new SDL_Color[szerokosc/2*wysokosc];
 
-        SDL_Color kolor;
+    // RightToLeft();
+    // if(dithering==0) szaryDedykowany();
+    // if(dithering==1){
+    //     ileKubelkow = 0;
+    //     int numer = 0;
 
-        for(int y = 0; y < wysokosc; y++)
-            {
-                for(int x = 0; x < szerokosc/2; x++)
-                {
-                    kolor = getPixel(x,y);
-                    obrazek[numer] = {kolor.r, kolor.g, kolor.b};
-                    numer++;
-                }
-            }
-        medianCutBW(0, numer-1, 5);
-        ditheringFloydPaletowyBW();
-    }
-    if(dithering==2){
-        ileKubelkow = 0;
-        int numer = 0;
+    //     SDL_Color kolor;
 
-        SDL_Color kolor;
+    //     for(int y = 0; y < wysokosc; y++)
+    //         {
+    //             for(int x = 0; x < szerokosc/2; x++)
+    //             {
+    //                 kolor = getPixel(x,y);
+    //                 obrazek[numer] = {kolor.r, kolor.g, kolor.b};
+    //                 numer++;
+    //             }
+    //         }
+    //     medianCutBW(0, numer-1, 5);
+    //     ditheringFloydPaletowyBW();
+    // }
+    // if(dithering==2){
+    //     ileKubelkow = 0;
+    //     int numer = 0;
 
-        for(int y = 0; y < wysokosc; y++)
-            {
-                for(int x = 0; x < szerokosc/2; x++)
-                {
-                    kolor = getPixel(x,y);
-                    obrazek[numer] = {kolor.r, kolor.g, kolor.b};
-                    numer++;
-                }
-            }
-        medianCutBW(0, numer-1, 5);
-        ditheringBayerPaletowyBW();
-    }
-    SDL_UpdateWindowSurface(window);
-    zczytajDane8x8(szerokosc/2, 0);
+    //     SDL_Color kolor;
+
+    //     for(int y = 0; y < wysokosc; y++)
+    //         {
+    //             for(int x = 0; x < szerokosc/2; x++)
+    //             {
+    //                 kolor = getPixel(x,y);
+    //                 obrazek[numer] = {kolor.r, kolor.g, kolor.b};
+    //                 numer++;
+    //             }
+    //         }
+    //     medianCutBW(0, numer-1, 5);
+    //     ditheringBayerPaletowyBW();
+    // }
+    // SDL_UpdateWindowSurface(window);
+    // zczytajDane8x8(szerokosc/2, 0);
 }
 
 //paleta wykryta

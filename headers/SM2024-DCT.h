@@ -12,11 +12,15 @@
 #include <cmath>
 #include <iomanip>
 
-const int rozmiarBloku = 16;
+const int rozmiarBloku = 8;
 
 struct macierz {
     float dct[rozmiarBloku][rozmiarBloku];
+    float dctI[rozmiarBloku][rozmiarBloku];
+    float dctQ[rozmiarBloku][rozmiarBloku];
     Uint8 dane[rozmiarBloku][rozmiarBloku];
+    Uint8 daneI[rozmiarBloku][rozmiarBloku];
+    Uint8 daneQ[rozmiarBloku][rozmiarBloku];
 };
 
 
