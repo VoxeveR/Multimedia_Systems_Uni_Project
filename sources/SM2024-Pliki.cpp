@@ -1,8 +1,6 @@
 // funkcje do operacji na plikach
 #include "../headers/SM2024-Funkcje.h"
 #include "../headers/SM2024-Zmienne.h"
-#include "../headers/SM2024-Paleta.h"
-#include "../headers/SM2024-MedianCut.h"
 #include "../headers/SM2024-Pliki.h"
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Kompresje.h"
@@ -54,22 +52,6 @@ void zczytajDane16(){
     }
 }
 
-void zczytajDane8x8(int xStart, int yStart){
-    int k = 0;
-    for(int y = yStart; y < yStart + wysokosc; y+=8) //wysokoscObrazka zamiast wysokosc wczesniej bylo
-    {
-        for(int x = xStart; x < xStart + szerokosc/2; x+=8) //szereokoscObrazka
-        {
-            for(int z = y; z < y+8; z++){
-                for(int a = x; a<x+8; a++){
-                    dane[k] = getPixel(a,z);
-                    k++;
-                }
-            }
-        }
-    }
-}
-
 void clearVector24(){
     dane24.comp1.clear();
     dane24.comp2.clear();
@@ -91,199 +73,6 @@ void clearArray(){
     fill(data555, data555+sizeArray, 0);
 }
 
-void saveBW(std::string fileName, Uint8* dane, int size){
-    ofstream output(fileName, ios::binary);
-    
-    output.write((char*)dane, size);
-
-    output.close();
-}
-
-void saveRGB888(std::string fileName){
-    ofstream output(fileName, ios::binary);
-    SDL_Color color;
-    dane888 data;
-    int k = 0;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            color = getPixel(x, y);
-            data.comp1[k] = color.r;
-            data.comp2[k] = color.g;
-            data.comp3[k] = color.b;
-            k++;
-        }
-    }
-    output.write((char*)&data.comp1, sizeof(data.comp1));
-    output.write((char*)&data.comp2, sizeof(data.comp2));
-    output.write((char*)&data.comp3, sizeof(data.comp3));
-
-    output.close();
-}
-
-
-void saveYUV888(std::string fileName){
-    ofstream output(fileName, ios::binary);
-    dane888 data;
-    YUV yuv;
-    int k = 0;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            yuv = RGBtoYUV(x, y);
-            data.comp1[k] = yuv.Y;
-            data.comp2[k] = yuv.U;
-            data.comp3[k] = yuv.V;
-            k++;
-        }
-    }
-    output.write((char*)&data.comp1, sizeof(data.comp1));
-    output.write((char*)&data.comp2, sizeof(data.comp2));
-    output.write((char*)&data.comp3, sizeof(data.comp3));
-
-    output.close();
-}
-
-void saveYIQ888(std::string fileName){
-    ofstream output(fileName, ios::binary);
-    dane888 data;
-    YIQ yiq;
-    int k = 0;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            yiq = RGBtoYIQ(x, y);
-            data.comp1[k] = yiq.Y;
-            data.comp2[k] = yiq.Q;
-            data.comp3[k] = yiq.I;
-            k++;
-        }
-    }
-    output.write((char*)&data.comp1, sizeof(data.comp1));
-    output.write((char*)&data.comp2, sizeof(data.comp2));
-    output.write((char*)&data.comp3, sizeof(data.comp3));
-
-    output.close();
-}
-
-void saveYCbCr888(std::string fileName){
-    ofstream output(fileName, ios::binary);
-    dane888 data;
-    YCbCr ycbcr;
-    int k = 0;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            ycbcr = RGBtoYCbCr(x, y);
-            data.comp1[k] = ycbcr.Y;
-            data.comp2[k] = ycbcr.Cr;
-            data.comp3[k] = ycbcr.Cb;
-            k++;
-        }
-    }
-    output.write((char*)&data.comp1, sizeof(data.comp1));
-    output.write((char*)&data.comp2, sizeof(data.comp2));
-    output.write((char*)&data.comp3, sizeof(data.comp3));
-
-    output.close();
-}
-
-void saveHSL888(std::string fileName){
-    ofstream output(fileName, ios::binary);
-    dane888 data;
-    HSL hsl;
-    int k = 0;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            hsl = RGBtoHSL(x, y);
-            data.comp1[k] = hsl.H;
-            data.comp2[k] = hsl.S;
-            data.comp3[k] = hsl.L;
-            k++;
-        }
-    }
-    output.write((char*)&data.comp1, sizeof(data.comp1));
-    output.write((char*)&data.comp2, sizeof(data.comp2));
-    output.write((char*)&data.comp3, sizeof(data.comp3));
-
-    output.close();
-}
-
-void saveRGB555(std::string fileName){
-    clearArray();
-    ofstream output(fileName, ios::binary);
-    SDL_Color color;
-    int k = 0;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            data555[k] = getRGB555_(x, y);
-            k++;
-        }
-    }
-    output.write((char*)&data555, sizeof(data555));
-
-    output.close();
-}
-
-void saveRGB565(std::string fileName){
-    clearArray();
-    ofstream output(fileName, ios::binary);
-    SDL_Color color;
-    int k = 0;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc/2; x++){
-            data555[k] = getRGB565_(x, y);
-            k++;
-        }
-    }
-    output.write((char*)&data555, sizeof(data555));
-
-    output.close();
-}
-
-void unpack8Colors(Uint8* input, Uint8* output) {
-    Uint8 tmp;
-
-    // AAAAABBB
-    output[0] = input[0] >> 3;
-    output[1] = (input[0] << 5) >> 3;
-
-    // BBCCCCCD
-    tmp = input[1] >> 6;
-    output[1] |= tmp;
-
-    output[2] = (input[1] << 2) >> 3;
-
-    // DDDDEEEE
-    tmp = (input[1] << 7) >> 3;
-    output[3] = tmp | (input[2] >> 4);
-
-    // EFFFFFGG
-    output[4] = (input[2] << 4) >> 3;
-    output[4] |= input[3] >> 7;
-
-    output[5] = (input[3] << 1) >> 3;
-
-    // GGGHHHHH
-    tmp = (input[3] << 6) >> 3;
-    output[6] = tmp | (input[4] >> 5);
-
-    output[7] = (input[4] << 3) >> 3;
-}
-
-void pack8Colors(Uint8* input, Uint8* output) {
-    // AAAAABBB
-    output[0] = (input[0] << 3) | (input[1] >> 2);
-
-    // BBCCCCCD
-    output[1] = (input[1] << 6) | (input[2] << 1) | (input[3] >> 4);
-
-    // DDDDEEEE
-    output[2] = (input[3] << 4) | (input[4] >> 1);
-
-    // EFFFFFGG
-    output[3] = (input[4] << 7) | (input[5] << 2) | (input[6] >> 3);
-
-    // GGGHHHHH
-    output[4] = (input[6] << 5) | input[7];
-
-}
 
 void save(std::string nazwa) {
     std::ofstream wyjscie(nazwa, std::ios::binary);
@@ -456,24 +245,6 @@ void narysujDane16(int xStart, int yStart){
             if(k!=64000){
                 setRGB565(x, y, dane16.comp[k]);
                 k++;
-            }
-        }
-    }
-    SDL_UpdateWindowSurface(window);
-}
-
-
-void narysujDane(int xStart, int yStart){
-    int k = 0;
-    for(int y = yStart; y < yStart + wysokosc; y+=8)
-    {
-        for(int x = xStart; x < xStart + szerokosc/2; x+=8)
-        {
-            for(int z = y; z < y+8; z++){
-                for(int a = x; a<x+8; a++){
-                    setPixel(a,z,dane[k].r,dane[k].g,dane[k].b);
-                    k++;
-                }
             }
         }
     }

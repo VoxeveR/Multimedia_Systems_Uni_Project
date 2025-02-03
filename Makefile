@@ -6,9 +6,7 @@ all:
 		$(SRC_DIR)/SM2024-Dithering.cpp \
 		$(SRC_DIR)/SM2024-Funkcje.cpp \
 		$(SRC_DIR)/SM2024-Konwersje.cpp \
-		$(SRC_DIR)/SM2024-MedianCut.cpp \
 		$(SRC_DIR)/SM2024-Modele.cpp \
-		$(SRC_DIR)/SM2024-Paleta.cpp \
 		$(SRC_DIR)/SM2024-Pliki.cpp \
 		$(SRC_DIR)/SM2024-Zmienne.cpp \
 		$(SRC_DIR)/SM2024-Probkowanie.cpp \

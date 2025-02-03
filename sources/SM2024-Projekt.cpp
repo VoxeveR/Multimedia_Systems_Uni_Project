@@ -1,8 +1,6 @@
 // główny plik projektu
 #include "../headers/SM2024-Zmienne.h"
 #include "../headers/SM2024-Funkcje.h"
-#include "../headers/SM2024-Paleta.h"
-#include "../headers/SM2024-MedianCut.h"
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Pliki.h"
 #include "../headers/SM2024-Modele.h"
@@ -120,7 +118,7 @@ int main(int argc, char* argv[]) {
             cout << "Dithering: " << (dithering == 0 ? "Brak" : (dithering == 1 ? "Floyd-Steinberg" : "Bayer")) << endl;
             cout << "============================" << endl;
 
-            cout << "=== OPCJE PALETY ===" << endl;
+            cout << "=== OPCJE ===" << endl;
             cout << "1. Zmiana na skale szarosci" << endl;
             cout << "2. Zamiana na 16-bitowy RGB565" << endl;
             cout << "3. Zamiana na 24-bitowy YIQ888" << endl;

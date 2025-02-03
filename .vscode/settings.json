@@ -70,7 +70,9 @@
         "xstddef": "cpp",
         "xtr1common": "cpp",
         "xutility": "cpp",
-        "semaphore": "cpp"
+        "semaphore": "cpp",
+        "iomanip": "cpp",
+        "sstream": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

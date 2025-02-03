@@ -1,8 +1,6 @@
 // podstawowe funkcje
 #include "../headers/SM2024-Funkcje.h"
 #include "../headers/SM2024-Zmienne.h"
-#include "../headers/SM2024-Paleta.h"
-#include "../headers/SM2024-MedianCut.h"
 #include "../headers/SM2024-Pliki.h"
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Modele.h"
@@ -27,9 +25,6 @@ void RightToLeft(){
     }
     SDL_UpdateWindowSurface(window);
 }
-
-
-
 
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -163,18 +158,6 @@ void Funkcja8() {
 }
 
 void Funkcja9() {
-
-    // int nieskompresowane[] = {0, 0, 0, 1, 1, 1, 1, 2, 0, 0, 3, 1, 3,
-    // 2, 2, 0, 0, 0, 3, 3, 3, 3, 1, 2, 1, 2, 3, 1, 2, 0, 0, 1, 1, 1, 3, 3};
-    // int dlugosc = 36;
-    // std::cout << "wejscie:" << std::endl;
-    // for(int c = 0; c < dlugosc; c++){
-    //     std::cout << (int)nieskompresowane[c] << ", ";
-    // }
-    // std::cout << std::endl;
-    // LZWKompresja(nieskompresowane, dlugosc);
-    // std::cout << std::endl;
-
     narysujDane24(szerokosc/2,0);
 
     SDL_UpdateWindowSurface(window);

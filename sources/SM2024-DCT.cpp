@@ -2,8 +2,6 @@
 #include "../headers/SM2024-Zmienne.h"
 #include "../headers/SM2024-Funkcje.h"
 #include "../headers/SM2024-Konwersje.h"
-#include "../headers/SM2024-MedianCut.h"
-#include "../headers/SM2024-Paleta.h"
 #include "../headers/SM2024-Kompresje.h"
 #include "../headers/SM2024-Modele.h"
 #include "../headers/SM2024-DCT.h"

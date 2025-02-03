@@ -1,4 +1,4 @@
-// funkcje do obs³ugi ditheringu
+// funkcje do obsï¿½ugi ditheringu
 #ifndef SM2024_DITHERING_H_INCLUDED
 #define SM2024_DITHERING_H_INCLUDED
 #include <stdio.h>
@@ -11,21 +11,8 @@
 // ++                  BAYER                        ++
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//float sredniaKrokR();
-//float sredniaKrokG();
-//float sredniaKrokB();
 void ditheringBayer();
-void ditheringBayerPaletowy();
 void ditheringBayerBW();
-void ditheringBayerPaletowyBW();
 
-// +++++++++++++++++++++++++++++++++++++++++++++++++++
-// ++              FLOYD-STEINBERG                  ++
-// +++++++++++++++++++++++++++++++++++++++++++++++++++
-
-void ditheringFloyd();
-void ditheringFloydBW();
-void ditheringFloydPaletowy();
-void ditheringFloydPaletowyBW();
 
 #endif // SM2024_DITHERING_H_INCLUDED
