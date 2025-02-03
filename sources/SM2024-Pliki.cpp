@@ -9,6 +9,7 @@
 #include "../headers/SM2024-Konwersje.h"
 #include "../headers/SM2024-Modele.h"
 #include "../headers/SM2024-Filtrowanie.h"
+#include "../headers/SM2024-DCT.h"
 
 using namespace std;
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -321,8 +322,6 @@ void save(std::string nazwa) {
             for(token<Uint16> t: tokenComp){
                 wyjscie.write(reinterpret_cast<char*>(&t), sizeof(token<Uint16>));
             }
-        }else if(compression == 2){
-
         }else{
             //zapis bez kompresja LZ77 dla 16bit
             int rozmiar = static_cast<int>(dane16.comp.size());
@@ -353,7 +352,7 @@ void save(std::string nazwa) {
                 }
 
             }else if(compression == 2){
-
+                saveDCT(wyjscie, yiqstatus);
             }else{
                 //zapis bez kompresji dla czanobiałego
                 int rozmiar = static_cast<int>(dane8.comp.size());
@@ -390,7 +389,8 @@ void save(std::string nazwa) {
                     wyjscie.write(reinterpret_cast<char*>(&t), sizeof(token<Uint8>));
                 }
             }else if(compression == 2){
-
+                // dct
+                saveDCT(wyjscie, yiqstatus);
             }else{
                 //zapis bez kompresja LZ77 dla 24bit
                 int rozmiar = static_cast<int>(dane24.comp1.size());
@@ -620,6 +620,7 @@ bool read(std::string nazwa) {
                 }
         }else if(compression == 2){
             //dekompresja  DCT
+            readDCT(wejscie, yiqstatus);
         }else{
             //brak dekompresji
             if(bit == 16){
