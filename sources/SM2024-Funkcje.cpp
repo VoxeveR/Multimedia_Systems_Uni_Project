@@ -1,8 +1,6 @@
 // podstawowe funkcje
 #include "../headers/SM2024-Funkcje.h"
 #include "../headers/SM2024-Zmienne.h"
-#include "../headers/SM2024-Paleta.h"
-#include "../headers/SM2024-MedianCut.h"
 #include "../headers/SM2024-Pliki.h"
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Modele.h"
@@ -29,289 +27,138 @@ void RightToLeft(){
 }
 
 
-
-
-
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++        Funkcje zmapowane do klawiszy          ++
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//paleta narzucona
+//Skala szarości
 void Funkcja1() {
     RightToLeft();
+    clearVector8();
 
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc / 2; x++){
-            setPixel(x + szerokosc/2, y , 0, 0, 0);
-        }
-    }
+    blackandwhite = 1;
 
-    dane888 dataCopy;
-    zczytajDane(&dataCopy);
-    dane888 data = filterData(FilterType::PAETH);
-
-    unFilterData(&data, FilterType::PAETH);
-    int k = 0;
-    std::cout << "Finished filter" << std::endl;
-    for(int y = 0; y < wysokosc; y++){
-        for(int x = 0; x < szerokosc / 2; x++){
-            setPixel(x + szerokosc / 2, y, data.comp1[k], data.comp2[k], data.comp3[k]);
-            k++;
-        }
-    }
-    
-    //initial project
-    //RightToLeft();
-    //HSLSampling();
-    //saveRGB888("test.jawa");
-    // identyfikator[0] = 'P';
-    // identyfikator[1] = 'J';
-    // tryb = 1;
-
-    // RightToLeft();
-
-    // if(dithering == 0) paletaNarzucona();
-    // if(dithering == 1) ditheringFloyd();
-    // if(dithering == 2) ditheringBayer();
-
-    SDL_UpdateWindowSurface(window);
-    // zczytajDane8x8(szerokosc/2, 0);
-}
-
-
-std::vector<Uint8> zczytajDaneBW(){
-    std::vector<Uint8> output;
+    SDL_Color color;
+    Uint8 new_color;
     for(int y = 0; y < wysokosc; y++){
         for(int x = 0; x < szerokosc/2; x++){
-            SDL_Color color = getPixel(x, y);
-            output.push_back(z24RGBna8BW(color));
+            color = getPixel(x, y);
+            new_color = z24RGBna8BW(color);
+            setPixel(x+szerokosc/2, y, new_color, new_color, new_color);
         }
     }
 
-    return output;
+    SDL_UpdateWindowSurface(window);
+    zczytajDaneBW();
 }
 
-//szarosc narzucona
+
+
+
+//16-bit
 void Funkcja2() {
-
     RightToLeft();
+    clearVector16();
 
-    // Uint8 dane[320*200];
+    bit = 16;
+    std::cout << "Dithering" << dither << std::endl;
+    if(blackandwhite == 1){
+        if(dithering == 1) ditheringBayerBW();
+        else{
+            SDL_Color color;
+            for(int y = 0; y < wysokosc; y++){
+                for(int x = 0; x < szerokosc/2; x++){
+                    color = getPixel(x, y);
+                    setRGB565(x+szerokosc/2, y, color.r, color.g, color.b);
+                }
+            }
+            
+        }
+        
+    }else{
+        if(dithering == 1) ditheringBayer();
+        else{
+            SDL_Color color;
+            for(int y = 0; y < wysokosc; y++){
+                for(int x = 0; x < szerokosc/2; x++){
+                    color = getPixel(x, y);
+                    setRGB565(x+szerokosc/2, y, color.r, color.g, color.b);
+                }
+            }
 
-    // zczytajDaneBW(dane);
+        }
 
-    // int k = 0;
-    // for(int y = 0; y < wysokosc; y++){
-    //     for(int x = 0; x < szerokosc/2; x++){
-    //         setPixel(x + szerokosc/2, y, dane[k], dane[k], dane[k]);
-    //         k++;
-    //     }
-    // }
+    }
 
+    zczytajDane16();
 
-    std::vector<Uint8> array = zczytajDaneBW();
-    std::cout << "Zrobiono konwersję na BW\n";
-    // RLEKompresja(array, array.size(), "test.jawa");
-    saveVector<Uint8>(array, "test2.jawa");
-    // RLEDekompresja("test.jawa");
+    SDL_UpdateWindowSurface(window);
+}
 
-    //
+//YIQ
+void Funkcja3(){
+    RightToLeft();
+    clearVector24();
+    clearVector8();
 
-    for(int x = 0; x < szerokosc; x++){
-        for(int y = 0; y < wysokosc; y++){
-            setPixel(x, y, 0, 0, 0);
+    yiqstatus = 1;
+
+    YIQ color;
+    for(int y = 0; y < wysokosc; y++){
+        for(int x = 0; x < szerokosc/2; x++){
+            color = RGBtoYIQ(x, y);
+            setYIQ(x + szerokosc/2, y, color.Y, color.I, color.Q);
         }
     }
 
-    LZWKompresja(array, array.size(), "test.jawa");    
     SDL_UpdateWindowSurface(window);
-    LZWDekompresja("test.jawa");
-    
-
-    // saveBW("test.jawa", dane, sizeof(dane));
-
-   /* identyfikator[0] = 'P';
-    identyfikator[1] = 'J';
-    tryb = 2;
-
-    RightToLeft();
-
-    if(dithering == 0) szaryNarzucony();
-    if(dithering == 1) ditheringFloydBW();
-    if(dithering == 2) ditheringBayerBW();*/
-
-   // zczytajDane8x8(szerokosc/2, 0);
+    zczytajDane();
 }
 
-//szarosc dedykowana
-void Funkcja3() {
-    identyfikator[0] = 'P';
-    identyfikator[1] = 'J';
-    tryb = 3;
-    obrazek = new SDL_Color[szerokosc/2*wysokosc];
-
-    RightToLeft();
-    if(dithering==0) szaryDedykowany();
-    if(dithering==1){
-        ileKubelkow = 0;
-        int numer = 0;
-
-        SDL_Color kolor;
-
-        for(int y = 0; y < wysokosc; y++)
-            {
-                for(int x = 0; x < szerokosc/2; x++)
-                {
-                    kolor = getPixel(x,y);
-                    obrazek[numer] = {kolor.r, kolor.g, kolor.b};
-                    numer++;
-                }
-            }
-        medianCutBW(0, numer-1, 5);
-        ditheringFloydPaletowyBW();
-    }
-    if(dithering==2){
-        ileKubelkow = 0;
-        int numer = 0;
-
-        SDL_Color kolor;
-
-        for(int y = 0; y < wysokosc; y++)
-            {
-                for(int x = 0; x < szerokosc/2; x++)
-                {
-                    kolor = getPixel(x,y);
-                    obrazek[numer] = {kolor.r, kolor.g, kolor.b};
-                    numer++;
-                }
-            }
-        medianCutBW(0, numer-1, 5);
-        ditheringBayerPaletowyBW();
-    }
-    SDL_UpdateWindowSurface(window);
-    zczytajDane8x8(szerokosc/2, 0);
-}
-
-//paleta wykryta
+//YIQ Sampling
 void Funkcja4() {
-    identyfikator[0] = 'P';
-    identyfikator[1] = 'J';
-    tryb = 4;
-
-    paletaWykryta();
-
-    SDL_UpdateWindowSurface(window);
-    zczytajDane8x8(szerokosc/2, 0);
-}
-
-//paleta dedykowana (median cut)
-void Funkcja5() { //FIXME: do poprawy 8bit nie dziala
-    identyfikator[0] = 'P';
-    identyfikator[1] = 'J';
-    tryb = 5;
-
-    obrazek = new SDL_Color[(szerokosc/2) * wysokosc];
-
     RightToLeft();
-    if(dithering==0) medianCutRun();
-    if(dithering==1){
-        ileKubelkow = 0;
-        int numer = 0;
+    clearVector24();
+    clearVector8();
 
-        SDL_Color kolor;
+    yiqstatus = 2;
 
-        for(int y = 0; y < wysokosc; y++)
-        {
-            for(int x = 0; x < szerokosc/2; x++)
-            {
-                kolor = getPixel(x,y);
-                obrazek[numer] = {kolor.r, kolor.g, kolor.b};
-                numer++;
-            }
-        }
-        medianCut(0, numer-1, 5);
-        ditheringFloydPaletowy();
-    }
-    if(dithering==2){
-        ileKubelkow = 0;
-        int numer = 0;
+    YIQSampling();
 
-        SDL_Color kolor;
-
-        for(int y = 0; y < wysokosc; y++)
-        {
-            for(int x = 0; x < szerokosc/2; x++)
-            {
-                kolor = getPixel(x,y);
-                obrazek[numer] = {kolor.r, kolor.g, kolor.b};
-                numer++;
-            }
-        }
-        medianCut(0, numer-1, 5);
-        ditheringBayerPaletowy();
-    }
     SDL_UpdateWindowSurface(window);
-    zczytajDane8x8(szerokosc/2, 0);
+    zczytajDane();
 }
 
-//przelaczanie ditheringu
+//filtrowanie danych
+void Funkcja5() {
+    prediction = 1;
+
+
+    SDL_UpdateWindowSurface(window);
+}
+
+// Kompresja bezstratna LZ77
 void Funkcja6() {
-    dithering = ++dithering % 3;
+    compression = 1;
+
     SDL_UpdateWindowSurface(window);
 }
 
+// Transformata dct
 void Funkcja7() {
-
-    int index = 0;
-
-    for (int r = 0; r < 4; r++) {
-        for (int g = 0; g < 4; g++) {
-            for (int b = 0; b < 2; b++) {
-                paletaCala[index].r = r * 80;
-                paletaCala[index].g = g * 80;
-                paletaCala[index].b = b * 255;
-                index++;
-                if (index >= 32) {
-                    break;
-                }
-            }
-            if (index >= 32) {
-                break;
-            }
-        }
-        if (index >= 32) {
-            break;
-        }
-    }
-
-    narysujPalete(0,0,paletaCala);
+    compression = 2;
+    
     SDL_UpdateWindowSurface(window);
 }
 
+//Wybór ditheringu
 void Funkcja8() {
-
-    for (int i = 0; i < 32; i++) {
-        paletaCala[i].r = i*8;
-        paletaCala[i].g = i*8;
-        paletaCala[i].b = i*8;
-    }
-
-    narysujPalete(0,0,paletaCala);
+    dithering = ++dithering % 2;
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja9() {
-
-    // int nieskompresowane[] = {0, 0, 0, 1, 1, 1, 1, 2, 0, 0, 3, 1, 3,
-    // 2, 2, 0, 0, 0, 3, 3, 3, 3, 1, 2, 1, 2, 3, 1, 2, 0, 0, 1, 1, 1, 3, 3};
-    // int dlugosc = 36;
-    // std::cout << "wejscie:" << std::endl;
-    // for(int c = 0; c < dlugosc; c++){
-    //     std::cout << (int)nieskompresowane[c] << ", ";
-    // }
-    // std::cout << std::endl;
-    // LZWKompresja(nieskompresowane, dlugosc);
-    // std::cout << std::endl;
+    narysujDane24(szerokosc/2,0);
 
     SDL_UpdateWindowSurface(window);
 }

@@ -6,28 +6,24 @@
 #include <math.h>
 #include <fstream>
 #include <iostream>
+#include <thread>
 #include <vector>
 #include <string>
 #include <SDL2/SDL.h>
 
-void zczytajDane(dane888* dataArr);
-void zczytajDane8x8(int xStart, int yStart);
-//void unpack8Colors(Uint8* input, Uint8* output);
-//void pack8Colors(Uint8* input, Uint8* output);
+void zczytajDane();
+void zczytajDaneBW();
+void zczytajDane16();
+void clearVector24();
+void clearVector8();
+void clearVector16();
 void save(std::string nazwa);
-void narysujDane(int xStart, int yStart);
+void narysujDane24(int xStart, int yStart);
+void narysujDane8(int xStart, int yStart);
 bool read(std::string nazwa);
 bool odczytajPlik_bmp(std::string nazwa);
 void saveRightHalfBMP(std::string nazwa);
 void ladujBMP(char const* nazwa, int x, int y);
-void saveBW(std::string fileName, Uint8* dane, int size);
-void saveRGB888(std::string fileName);
-void saveYUV888(std::string fileName);
-void saveYIQ888(std::string fileName);
-void saveYCbCr888(std::string fileName);
-void saveHSL888(std::string fileName);
-void saveRGB555(std::string fileName);
-void saveRGB565(std::string fileName);
 
 template <typename T>
 void saveVector(std::vector<T> v, std::string fileName) {

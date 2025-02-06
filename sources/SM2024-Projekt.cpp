@@ -1,8 +1,6 @@
 // główny plik projektu
 #include "../headers/SM2024-Zmienne.h"
 #include "../headers/SM2024-Funkcje.h"
-#include "../headers/SM2024-Paleta.h"
-#include "../headers/SM2024-MedianCut.h"
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Pliki.h"
 #include "../headers/SM2024-Modele.h"
@@ -100,11 +98,10 @@ int main(int argc, char* argv[]) {
                             cout << "Blad odczytu pilku. Nacisnij dowolny klawisz aby kontynuowac...";
                             _getch();
                         }
-
-                        narysujDane(szerokosc/2,0);
+                        std::cout<< szerokosc;
+                        //narysujDane8(szerokosc/2, 0);
                         break;
-
-                    }else if (counter1 == 3) {
+                    } else if (counter1 == 3) {
                         color(15);
                         cout << "Wybrano opcje: Wyjdz z programu" << endl;
                         return 0;
@@ -121,25 +118,24 @@ int main(int argc, char* argv[]) {
             cout << "Dithering: " << (dithering == 0 ? "Brak" : (dithering == 1 ? "Floyd-Steinberg" : "Bayer")) << endl;
             cout << "============================" << endl;
 
-            cout << "=== OPCJE PALETY ===" << endl;
+            cout << "=== OPCJE ===" << endl;
             cout << "1. Zmiana na skale szarosci" << endl;
             cout << "2. Zamiana na 16-bitowy RGB565" << endl;
-            cout << "3. Zamiana na 24-bitowy RGB888" << endl;
-            cout << "4. Zamiana na 24-bitowy YIQ888" << endl;
+            cout << "3. Zamiana na 24-bitowy YIQ888" << endl;
+            cout << "4. Zamiana na 24-bitowy YIQ888 z próbkowaniem" << endl;
             cout << "5. Algorytm Predykcji typ 2" << endl;
             cout << "6. Kompresja bezstratna LZ77" << endl;
             cout << "7. Kompresja stratna (transformata DCT)" << endl;
             cout << "============================" << endl;
 
             cout << "=== SUGEROWANY SPOOB UZYCIA ===" << endl;
-            cout << "https://github.com/VoxeveR/Multimedia_Systems_Uni_Project/blob/newmenu/sugerowany.jpeg" << endl;
+            cout << "https://github.com/VoxeveR/Multimedia_Systems_Uni_Project/blob/main/sugerowany.jpeg" << endl;
             cout << "===========================" << endl;
 
             cout << "=== USTAWIENIA DITHERINGU ===" << endl;
-            cout << "6. Przelacz Dithering" << endl;
+            cout << "8. Przelacz Dithering" << endl;
             cout << "   0 - Brak ditheringu" << endl;
-            cout << "   1 - Floyd-Steinberg" << endl;
-            cout << "   2 - Bayer" << endl;
+            cout << "   1 - Bayer" << endl;      
             cout << "============================" << endl;
 
             cout << "=== DODATKOWE OPCJE ===" << endl;
@@ -170,6 +166,10 @@ int main(int argc, char* argv[]) {
                             window = nullptr;
                             screen = nullptr;
                             option = true;
+                            blackandwhite = 0;
+                            prediction = 0;
+                            bit = 24;
+                            compression = 0;
                         }
                         if (event.key.keysym.sym == SDLK_1)
                         {
@@ -229,8 +229,12 @@ int main(int argc, char* argv[]) {
 
                             std::cout << "czyBMP: " << czyBMP << std::endl;
                             if(czyBMP) odczytajPlik_bmp(nazwa);
-                            else narysujDane(szerokosc/2,0);
+                            else narysujDane8(szerokosc/2,0);
                             option = true;
+                            blackandwhite = 0;
+                            prediction = 0;
+                            bit = 24;
+                            compression = 0;
                         }
                         if (event.key.keysym.sym == SDLK_s){
                             system("cls");

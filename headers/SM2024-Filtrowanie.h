@@ -5,7 +5,7 @@
 #include "../headers/SM2024-Zmienne.h"
 
 
-void unFilterData(dane888* data, FilterType type);
-dane888 filterData(FilterType type);
+void unFilterData(FilterType type);
+void filterData(FilterType type);
 
 #endif // SM2024_FILTROWANIE_H_INCLUDED

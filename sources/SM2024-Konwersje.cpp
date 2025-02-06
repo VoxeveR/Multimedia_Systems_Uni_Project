@@ -1,7 +1,5 @@
 #include "../headers/SM2024-Funkcje.h"
 #include "../headers/SM2024-Zmienne.h"
-#include "../headers/SM2024-Paleta.h"
-#include "../headers/SM2024-MedianCut.h"
 #include "../headers/SM2024-Pliki.h"
 #include "../headers/SM2024-Dithering.h"
 #include "../headers/SM2024-Modele.h"
@@ -73,26 +71,6 @@ SDL_Color z5BWna24RGB(Uint8 szary5b){
     return kolor;
 }
 
-void setRGB555(int xx, int yy, Uint8 r, Uint8 g, Uint8 b){
-    
-    r = (r >> 3) << 3;
-    g = (g >> 3) << 3;
-    b = (b >> 3) << 3;
-
-    setPixel(xx, yy, r, g, b);
-}
-
-void setRGB555(int xx, int yy, Uint16 rgb555){
-    Uint8 r, g, b;
-
-    r = ((((rgb555 << 1) >> 11) << 3));
-    g = ((((rgb555 << 6) >> 11) << 3));
-    b = ((((rgb555 << 11) >> 11) << 3));
-
-    setPixel(xx, yy, r, g, b);
-    return;
-}
-
 void setRGB565(int xx, int yy, Uint8 r, Uint8 g, Uint8 b){
     
     r = (r >> 3) << 3;
@@ -111,32 +89,6 @@ void setRGB565(int xx, int yy, Uint16 rgb565){
 
     setPixel(xx, yy, r, g, b);
     return;
-}
-
-SDL_Color getRGB555(int xx, int yy){
-    SDL_Color color = getPixel(xx, yy);
-    
-    color.r = (color.r >> 3) << 3;
-    color.g = (color.g >> 3) << 3;
-    color.b = (color.b >> 3) << 3;
-
-    return color;
-}
-
-Uint16 getRGB555_(int xx, int yy){
-
-    SDL_Color color = getPixel(xx, yy);
-    Uint16 retColor, r, g, b;
-
-    r = color.r;
-    g = color.g;
-    b = color.b;
-
-    r = (r >> 3) << 10;
-    g = (g >> 3) << 5;
-    b = (b >> 3);
-
-    return retColor = r | g | b;
 }
 
 SDL_Color getRGB565(int xx, int yy){

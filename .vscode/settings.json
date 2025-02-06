@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*html": "html",
         "iostream": "cpp",
         "xstring": "cpp",
         "algorithm": "cpp",
@@ -54,7 +55,24 @@
         "text_encoding": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "cstring": "cpp",
+        "ios": "cpp",
+        "ratio": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "xfacet": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp",
+        "xlocinfo": "cpp",
+        "xlocnum": "cpp",
+        "xmemory": "cpp",
+        "xstddef": "cpp",
+        "xtr1common": "cpp",
+        "xutility": "cpp",
+        "semaphore": "cpp",
+        "iomanip": "cpp",
+        "sstream": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
